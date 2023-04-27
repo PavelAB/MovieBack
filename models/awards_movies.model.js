@@ -5,9 +5,12 @@ const { Sequelize, DataTypes, INTEGER, ModelStatic } = require ('sequelize');
  * @returns { ModelStatic<any> }
  */
 
+//TODO Validation sur chaque colonne
+
+
 module.exports = ( sequelize ) => {
     const Awards_Movies = sequelize.define('Awards_Movies', {
-        ID_Award: {
+        ID_Award_Movie: {
             type: INTEGER,
             primaryKey: true,
             autoIncrement: true
