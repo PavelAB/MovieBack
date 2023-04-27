@@ -1,0 +1,31 @@
+const { Sequelize, DataTypes, INTEGER, ModelStatic } = require ('sequelize');
+
+/**
+ * @param { Sequelize } sequelize
+ * @returns { ModelStatic<any> }
+ */
+
+module.exports = ( sequelize ) => {
+    const Awards_Movies = sequelize.define('Awards_Movies', {
+        ID_Award: {
+            type: INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        type_award: {
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
+        name_award: {
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
+        year_award: {
+            type: DataTypes.DATE,
+            allowNull: false
+        }
+    },{ 
+        tableName: 'Awards_Movies'
+    })
+    return Awards_Movies
+}

@@ -9,6 +9,8 @@ const sequelize = new Sequelize(DB_DATABASE,DB_USERNAME,DB_PASSWORD,{
 
 
 const db = {}
-db.sequelize = sequelize
+db.sequelize = sequelize;
+
+db.Awards_Movies = require('./awards_movies.model')(sequelize);
 
 module.exports = db
