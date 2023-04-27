@@ -12,7 +12,7 @@ const db = {}
 db.sequelize = sequelize;
 
 
-//Create Tables
+// Tables
 db.Awards_Movies = require('./awards_movies.model')(sequelize)
 db.Awards_Personnes = require('./awards_personnes.model')(sequelize)
 db.Comments = require('./comments.model')(sequelize)
@@ -24,38 +24,62 @@ db.Users = require('./users.model')(sequelize)
 db.Genres = require('./genres.model')(sequelize)
 db.Companies = require('./companies.model')(sequelize)
 
-//Create Association ManyToMany
-//TODO Changer les noms du colonnes dans les tables MM
+// Association ManyToMany
+// TODO Changer les noms du colonnes dans les tables MM
 
-//Movies-Genres
+// Movies - Genres
 db.Movies.belongsToMany(db.Genres, { through: 'MM_Has_Genres_Movies'})
 db.Genres.belongsToMany(db.Movies, { through: 'MM_Has_Genres_Movies'})
 
-//Movies-Tags
+// Movies - Tags
 db.Movies.belongsToMany(db.Tags, { through: 'MM_Characterize_Tags_Movies'})
 db.Tags.belongsToMany(db.Movies, { through: 'MM_Characterize_Tags_Movies'})
 
-//Movies-Companies
+// Movies - Companies
 db.Movies.belongsToMany(db.Companies, { through: 'MM_Distributed_by_Companies_Movies'})
 db.Companies.belongsToMany(db.Movies, { through: 'MM_Distributed_by_Companies_Movies'})
 
-//Movies-Personnes
+// Movies - Personnes
 db.Movies.belongsToMany(db.Personnes, { through: 'MM_Writen_by_Personnes_Movies'})
 db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies'})
 
-//Movies-Personnes
+// Movies - Personnes
 db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies'})
 db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies'})
 
 
+// Association OneToMany
+
+// Movies - Awards_Movies
+db.Movies.hasMany(db.Awards_Movies)
+db.Awards_Movies.belongsTo(db.Movies)
+
+// Personnes - Awards_Personnes
+db.Personnes.hasMany(db.Awards_Personnes)
+db.Awards_Personnes.belongsTo(db.Personnes)
+
+// Movies - Ratings
+db.Movies.hasMany(db.Ratings)
+db.Ratings.belongsTo(db.Movies)
+
+// Users - Ratings
+db.Users.hasMany(db.Ratings)
+db.Ratings.belongsTo(db.Users)
+
+// Movies - Comments
+db.Movies.hasMany(db.Comments)
+db.Comments.belongsTo(db.Movies)
+
+// Users - Comments
+db.Users.hasMany(db.Comments)
+db.Comments.belongsTo(db.Users)
 
 
+// Association OneToOne
+
+// Personnes - Movies
+db.Personnes.hasOne(db.Movies)
+db.Movies.belongsTo(db.Personnes)
 
 
-//Create Association OneToMany
-
-//Create Association OneToOne
-
-
-//TODO ajouter des liens ManyToMany Comments, Movies, Personnes, Ratings, Tags, Users, Genres, Companies
 module.exports = db
