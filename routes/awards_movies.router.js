@@ -1,7 +1,9 @@
+const awardMovieController = require('../controllers/awards_movies.controller')
+
 const  awardMovieRouter = require('express').Router()
 
 awardMovieRouter.route('/')
-    .get()
+    .get(awardMovieController.getAll)
     .post()
 awardMovieRouter.route('/:id')
     .get()

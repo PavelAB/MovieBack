@@ -51,28 +51,28 @@ db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies
 // Association OneToMany
 
 // Movies - Awards_Movies
-db.Movies.hasMany(db.Awards_Movies)
-db.Awards_Movies.belongsTo(db.Movies)
+db.Movies.hasMany(db.Awards_Movies, { foreignKey: { name: 'ID_Movie'}})
+db.Awards_Movies.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Personnes - Awards_Personnes
-db.Personnes.hasMany(db.Awards_Personnes)
-db.Awards_Personnes.belongsTo(db.Personnes)
+db.Personnes.hasMany(db.Awards_Personnes, { foreignKey: { name: 'ID_Personne'}})
+db.Awards_Personnes.belongsTo(db.Personnes, { foreignKey: { name: 'ID_Personne'}})
 
 // Movies - Ratings
-db.Movies.hasMany(db.Ratings)
-db.Ratings.belongsTo(db.Movies)
+db.Movies.hasMany(db.Ratings, { foreignKey: { name: 'ID_Movie'}})
+db.Ratings.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Users - Ratings
-db.Users.hasMany(db.Ratings)
-db.Ratings.belongsTo(db.Users)
+db.Users.hasMany(db.Ratings, { foreignKey: { name: 'ID_User'}})
+db.Ratings.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 // Movies - Comments
-db.Movies.hasMany(db.Comments)
-db.Comments.belongsTo(db.Movies)
+db.Movies.hasMany(db.Comments, { foreignKey: { name: 'ID_Movie'}})
+db.Comments.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Users - Comments
-db.Users.hasMany(db.Comments)
-db.Comments.belongsTo(db.Users)
+db.Users.hasMany(db.Comments, { foreignKey: { name: 'ID_User'}})
+db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 
 // Association OneToOne
