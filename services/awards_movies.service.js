@@ -8,6 +8,7 @@ const awardMovieService = {
             distinct: true
         })
         const award_Movie = rows.map( award => new awardMovieDTO(award))
+        console.log(award_Movie);
         return {
             award_Movie, count 
         }
@@ -18,8 +19,12 @@ const awardMovieService = {
     update : async () => {
 
     },
-    create : async () => {
-
+    create : async (data) => {
+        const isCreate = await db.Awards_Movies.create(data)
+        if(isCreate)
+            return true
+        else
+            return false
     },
     delete : async () => {
 

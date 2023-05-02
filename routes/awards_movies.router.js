@@ -4,7 +4,7 @@ const  awardMovieRouter = require('express').Router()
 
 awardMovieRouter.route('/')
     .get(awardMovieController.getAll)
-    .post()
+    .post(awardMovieController.create)
 awardMovieRouter.route('/:id')
     .get()
     .put()
