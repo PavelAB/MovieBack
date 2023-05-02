@@ -2,9 +2,9 @@ const { Sequelize } = require ('sequelize')
 
 const { DB_SERVER, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = process.env
 
-const sequelize = new Sequelize(DB_DATABASE,DB_USERNAME,DB_PASSWORD,{
-    host:DB_SERVER,
-    dialect:'mssql'
+const sequelize = new Sequelize( DB_DATABASE, DB_USERNAME, DB_PASSWORD, {
+    host: DB_SERVER,
+    dialect: 'mssql'
 })
 
 
@@ -24,8 +24,8 @@ db.Users = require('./users.model')(sequelize)
 db.Genres = require('./genres.model')(sequelize)
 db.Companies = require('./companies.model')(sequelize)
 
+
 // Association ManyToMany
-// TODO Changer les noms du colonnes dans les tables MM
 
 // Movies - Genres
 db.Movies.belongsToMany(db.Genres, { through: "MM_Has_Genres_Movies" , foreignKey: { name: "ID_Movie" }})
