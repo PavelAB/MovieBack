@@ -1,9 +1,9 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
-//TODO changer les noms de la compasante 
 
-const commentController = {
+
+const genreController = {
     /**
      * GetAll
      * @param { Request } req
@@ -60,4 +60,4 @@ const commentController = {
         res.sendStatus(501)
     }
 }
-module.exports = commentController
+module.exports = genreController

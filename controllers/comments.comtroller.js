@@ -3,7 +3,7 @@ const SuccessResponse = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
 
 
-//TODO changer les noms de la compasante 
+
 const commentController = {
     /**
      * GetAll
@@ -11,7 +11,12 @@ const commentController = {
      * @param { Response } res
      */
     getAll: async ( req, res ) => {
-        res.sendStatus(501)
+        const { comment, count } = await commentService.getAll()
+        
+        if(comment)
+            res.status(200).json( new SuccessResponse( comment, count ))
+        else
+            res.sendStatus(400)
     },
 
     /**
@@ -20,7 +25,11 @@ const commentController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        res.sendStatus(501)
+        const { values, count } = await commentService.getByParams(req.params)
+        if(values)
+            res.status(200).json( new SuccessResponse ( values, count ))
+        else 
+            res.sendStatus(400)
     },
 
     /**
@@ -30,7 +39,7 @@ const commentController = {
      */
     getByParams: async ( req, res ) => {
         res.sendStatus(501)
-        
+        //TODO ajouter le recherche par l'id_user ou ID_Movie
     },
 
     /**
@@ -39,7 +48,12 @@ const commentController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
-        res.sendStatus(501)
+        const data = req.body 
+        const isCreated = await commentService.create(data)
+        if(isCreated)
+            res.sendStatus(200)
+        else
+            res.sendStatus(401)
     },
 
     /**
@@ -58,7 +72,10 @@ const commentController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
-        res.sendStatus(501)
+        const id = req.params.ID_Comment
+        const isDeleted = await commentService.delete(id)
+        //TODO Ajouter un if pour verifier si le nombre a supprime existe bien
+        res.sendStatus(200)
     }
 }
 module.exports = commentController

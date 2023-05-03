@@ -15,7 +15,7 @@ module.exports = ( sequelize ) => {
             primaryKey: true,
             autoIncrement: true
         },
-        boby: {
+        body: {
             type: DataTypes.TEXT,
             allowNull: false
         },

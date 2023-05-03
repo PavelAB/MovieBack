@@ -1,11 +1,15 @@
+const commentController = require('../controllers/comments.comtroller')
+
 const  commentRouter = require('express').Router()
 
 commentRouter.route('/')
-    .get()
-    .post()
-commentRouter.route('/:id')
-    .get()
+    .get(commentController.getAll)
+    .post(commentController.create)
+commentRouter.route('/params')
+    .get(commentController.getByParams)
+commentRouter.route('/:ID_Comment')
+    .get(commentController.getByID)
     .put()
-    .delete()
+    .delete(commentController.delete)
 
 module.exports = commentRouter
