@@ -2,6 +2,8 @@ const awardMovieDTO = require("../dto/awardMovieDTO")
 const { Op } = require("sequelize");
 const db = require("../models")
 
+
+
 const awardMovieService = {
     getAll : async () => {
         const { rows, count } = await db.Awards_Movies.findAndCountAll({
@@ -43,7 +45,7 @@ const awardMovieService = {
         //TODO update
     },
     create : async (data) => {
-        // TODO ajouter create avec le film associer
+        // TODO ajouter la feature pour ajouter le film associe
         const isCreate = await db.Awards_Movies.create(data)
         if(isCreate)
             return true
@@ -51,6 +53,7 @@ const awardMovieService = {
             return false
     },
     delete : async (id) => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
         console.log(id);
         const isDeleted = await db.Awards_Movies.destroy({
             where:{

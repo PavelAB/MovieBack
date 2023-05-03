@@ -16,9 +16,10 @@ const personneService = {
 
     },
     update : async () => {
-
+        //TODO faire l'update
     },
     create : async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Personnes.create(data)
         if(isCreated)
             return true
@@ -26,6 +27,7 @@ const personneService = {
             return false
     },
     delete : async () => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
 
     },
 }

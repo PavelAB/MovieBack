@@ -2,6 +2,8 @@ const { Op } = require("sequelize");
 const db = require("../models");
 const awardPersonneDTO = require("../dto/awardPersonneDTO");
 
+
+
 const awardPersonneService = {
     getAll : async () => {
         const { rows, count } = await db.Awards_Personnes.findAndCountAll({
@@ -43,7 +45,7 @@ const awardPersonneService = {
         //TODO update
     },
     create : async (data) => {
-        // TODO ajouter create avec le film associer
+        // TODO ajouter la feature pour ajouter la personne associe
         const isCreate = await db.Awards_Personnes.create(data)
         if(isCreate)
             return true
@@ -51,6 +53,7 @@ const awardPersonneService = {
             return false
     },
     delete : async (id) => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
         const isDeleted = await db.Awards_Personnes.destroy({
             where:{
                 ID_Award_Personne : id

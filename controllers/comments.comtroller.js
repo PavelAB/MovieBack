@@ -3,7 +3,8 @@ const SuccessResponse = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
 
 
-
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const commentController = {
     /**
      * GetAll

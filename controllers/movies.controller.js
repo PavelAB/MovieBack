@@ -3,6 +3,8 @@ const SuccessResponse = require('../utils/SuccessResponse')
 const movieService = require('../services/movies.service')
 
 
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const movieController = {
     /**
      * GetAll

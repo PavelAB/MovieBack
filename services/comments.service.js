@@ -2,6 +2,8 @@ const commentDTO = require('../dto/commentDTO')
 const { Op } = require("sequelize");
 const db = require("../models")
 
+
+
 const commentService = {
     getAll : async () => {
         const { rows, count } = await db.Comments.findAndCountAll({
@@ -31,9 +33,10 @@ const commentService = {
         } 
     },
     update : async () => {
-
+        //TODO Ajouter l'update
     },
     create : async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Comments.create(data)
         if(isCreated)
             return true
@@ -41,6 +44,7 @@ const commentService = {
             return false
     },
     delete : async (id) => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
         const isDeleted = await db.Comments.destroy({
             where:{
                 ID_Comment : id

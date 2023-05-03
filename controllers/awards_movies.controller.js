@@ -3,7 +3,9 @@ const awardMovieService = require('../services/awards_movies.service')
 const SuccessResponse = require('../utils/SuccessResponse')
 
 
-//TODO ajouter l'erreur response 
+
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const awardMovieController = {
     /**
      * GetAll

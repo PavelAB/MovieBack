@@ -1,10 +1,10 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
-const commentService = require('../services/comments.service')
 const companyService = require('../services/companies.service')
 
 
-
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const companyController = {
     /**
      * GetAll

@@ -14,13 +14,11 @@ const ratingService = {
             values, count 
         }
     },
-    getByID : async () => {
-
-    },
     update : async () => {
-
+        //TODO faire l'update
     },
     create : async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Ratings.create(data)
         if(isCreated)
             return true
@@ -28,6 +26,7 @@ const ratingService = {
             return false
     },
     delete : async () => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
 
     },
 }

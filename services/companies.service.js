@@ -39,6 +39,7 @@ const companyService = {
         //TODO Update
     },
     create : async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Companies.create(data)
         if(isCreated)
             return true
@@ -46,6 +47,7 @@ const companyService = {
             return false
     },
     delete : async (id) => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
         const isDeleted = await db.Companies.destroy({
             where:{
                 ID_Company : id

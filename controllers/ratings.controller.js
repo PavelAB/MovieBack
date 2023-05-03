@@ -1,9 +1,11 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
-const commentService = require('../services/comments.service')
 const ratingService = require('../services/ratings.service')
-//TODO changer les noms de la compasante 
 
+
+
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const ratingController = {
     /**
      * GetAll

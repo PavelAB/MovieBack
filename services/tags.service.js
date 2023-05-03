@@ -13,13 +13,11 @@ const tagService = {
             values, count 
         }
     },
-    getByID : async () => {
-
-    },
     update : async () => {
-
+        //TODO Faire l'update
     },
     create : async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Tags.create(data)
         if(isCreated)
             return true
@@ -27,6 +25,7 @@ const tagService = {
             return false
     },
     delete : async () => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
 
     },
 }

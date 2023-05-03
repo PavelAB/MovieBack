@@ -1,9 +1,10 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
-const commentService = require('../services/comments.service')
 const genreService = require('../services/genres.service')
 
 
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const genreController = {
     /**
      * GetAll

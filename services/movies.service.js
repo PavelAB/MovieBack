@@ -31,26 +31,26 @@ const movieService = {
             await movie.addTag( data.tags, {transaction})
             await movie.addCompanies( data.company, {transaction})
             await movie.addAwards_Movies( data.award_movie, {transaction})
-            await movie.addWriters(data.writer, { through: 'MM_Writen_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
-            await movie.addActors(data.actor, { through: 'MM_Staring_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
-            await movie.setDirector(data.director)
+            await movie.addWriters( data.writer, { through: 'MM_Writen_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
+            await movie.addActors( data.actor, { through: 'MM_Staring_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
+            await movie.setDirector( data.director)
 
             await transaction.commit()
 
-        } catch (error) {
-            console.log(error)
+        } catch ( error ) {
+            console.log( error )
             await transaction.rollback()
             return null
         }
-        if(movie)
+        if( movie )
             return movie
 
     },
     update : async () => {
-
+        //TODO faire l'update
     },
     delete : async () => {
-
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
     },
 }
 module.exports = movieService 

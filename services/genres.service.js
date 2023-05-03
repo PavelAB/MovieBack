@@ -38,6 +38,7 @@ const genreService = {
         //TODO update
     },
     create: async (data) => {
+        //TODO Modifier le create
         const isCreated = await db.Genres.create(data)
         if(isCreated)
             return true
@@ -45,6 +46,7 @@ const genreService = {
             return false
     },
     delete: async (id) => {
+        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
         const isDeleted = await db.Genres.destroy({
             where:{
                 ID_Genre : id

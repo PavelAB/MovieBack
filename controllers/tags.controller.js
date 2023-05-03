@@ -1,9 +1,10 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
-const commentService = require('../services/comments.service')
 const tagService = require('../services/tags.service')
-//TODO changer les noms de la compasante 
 
+
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const tagController = {
     /**
      * GetAll

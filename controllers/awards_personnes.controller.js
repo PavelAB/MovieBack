@@ -2,7 +2,8 @@ const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
 const awardPersonneService = require('../services/awards_personnes.service')
 
-//TODO ajouter l'erreur response 
+//TODO Gestion de l'Error response
+//TODO Verifier le statusCode
 const awardPersonneController = {
     /**
      * GetAll
