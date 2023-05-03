@@ -1,6 +1,7 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
+const genreService = require('../services/genres.service')
 
 
 const genreController = {
@@ -10,7 +11,12 @@ const genreController = {
      * @param { Response } res
      */
     getAll: async ( req, res ) => {
-        res.sendStatus(501)
+        const { values, count } = await genreService.getAll()
+        
+        if(values)
+            res.status(200).json( new SuccessResponse( values, count ))
+        else
+            res.sendStatus(400)
     },
 
     /**
@@ -38,7 +44,12 @@ const genreController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
-        res.sendStatus(501)
+        const data = req.body 
+        const isCreated = await genreService.create(data)
+        if(isCreated)
+            res.sendStatus(200)
+        else
+            res.sendStatus(401)
     },
 
     /**

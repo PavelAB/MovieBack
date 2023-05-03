@@ -1,6 +1,7 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
+const companyService = require('../services/companies.service')
 
 
 
@@ -11,7 +12,12 @@ const companyController = {
      * @param { Response } res
      */
     getAll: async ( req, res ) => {
-        res.sendStatus(501)
+        const { values, count } = await companyService.getAll()
+        
+        if(values)
+            res.status(200).json( new SuccessResponse( values, count ))
+        else
+            res.sendStatus(400)
     },
 
     /**
@@ -39,7 +45,12 @@ const companyController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
-        res.sendStatus(501)
+        const data = req.body 
+        const isCreated = await companyService.create(data)
+        if(isCreated)
+            res.sendStatus(200)
+        else
+            res.sendStatus(401)
     },
 
     /**

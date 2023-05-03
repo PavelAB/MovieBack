@@ -40,12 +40,12 @@ db.Movies.belongsToMany(db.Companies, { through: 'MM_Distributed_by_Companies_Mo
 db.Companies.belongsToMany(db.Movies, { through: 'MM_Distributed_by_Companies_Movies' , foreignKey: { name: "ID_Company" }})
 
 // Movies - Personnes
-db.Movies.belongsToMany(db.Personnes, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" }})
-db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" }})
+db.Movies.belongsToMany(db.Personnes, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" },as: 'Writers'})
+db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" },as: 'WrittenMovies'})
 
 // Movies - Personnes
-db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" }})
-db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" }})
+db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" },as: 'Actors'})
+db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" },as: 'ActedMovies'})
 
 
 // Association OneToMany
@@ -79,7 +79,7 @@ db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 // Personnes - Movies
 db.Personnes.hasOne(db.Movies, { foreignKey: { name: 'directered_by'}})
-db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}})
+db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}, as: 'Director'})
 
 
 module.exports = db

@@ -13,9 +13,6 @@ const awardMovieService = {
             award_Movie, count 
         }
     },
-    getByID : async () => {
-        
-    },
     getByParams: async (data) => {
         if(data.type_award){
             data.type_award = data.type_award.replace("_", " ") 
