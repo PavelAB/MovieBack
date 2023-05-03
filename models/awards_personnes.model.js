@@ -24,7 +24,7 @@ module.exports = ( sequelize ) => {
             allowNull: false
         },
         year_award: {
-            type: DataTypes.DATE,
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     },{ 

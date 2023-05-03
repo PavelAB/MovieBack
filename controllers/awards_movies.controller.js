@@ -26,20 +26,13 @@ const awardMovieController = {
     },
 
     /**
-     * GetBy...
+     * GetByParams
      * @param { Request } req
      * @param { Response } res
      */
     getByParams: async ( req,res ) => {
-        console.log(req.query);
-        const type = req.query.type_award
-        const name = 'Best Picture'
-
-
-        // Or query ?
 
         const { values, count } = await awardMovieService.getByParams( req.query )
-
         res.status(200).json(new SuccessResponse( values, count ))
 
     },
@@ -75,6 +68,7 @@ const awardMovieController = {
     delete: async ( req,res ) => {
         const id = req.params.id
         const isDeleted = await awardMovieService.delete(id)
+        //TODO Ajouter un if pour verifier si le nombre a supprime existe bien
         res.sendStatus(200)
     }
 }

@@ -17,9 +17,11 @@ const awardMovieService = {
         
     },
     getByParams: async (data) => {
-        console.log(data);
         if(data.type_award){
-            data.type_award = data.type_award.replace("_"," ") 
+            data.type_award = data.type_award.replace("_", " ") 
+        }
+        if(data.name_award){
+            data.name_award = data.name_award.replace("_", " ") 
         }
 
         const Variable_Test = [data]
