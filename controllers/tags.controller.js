@@ -26,7 +26,7 @@ const tagController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        res.sendStatus(501)
+        
     },
 
     /**

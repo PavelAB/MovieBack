@@ -1,6 +1,6 @@
 const awardMovieDTO = require("../dto/awardMovieDTO")
-const { Op } = require("sequelize");
 const db = require("../models")
+const Movies = require("../models")
 
 
 
@@ -45,12 +45,25 @@ const awardMovieService = {
         //TODO update
     },
     create : async (data) => {
-        // TODO ajouter la feature pour ajouter le film associe
-        const isCreate = await db.Awards_Movies.create(data)
+        // FIXME ajouter la feature pour ajouter le film associe
+        console.log(data);
+        const transaction = await db.sequelize.transaction()
+        let isCreate
+        try {
+
+            isCreate = await db.Awards_Movies.create(data)
+            console.log(isCreate);
+            await isCreate.addMovies(data.ID_Movie, {transaction})
+
+            await transaction.commit()
+            
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
         if(isCreate)
             return true
-        else
-            return false
     },
     delete : async (id) => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
