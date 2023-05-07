@@ -45,15 +45,17 @@ const awardMovieService = {
         //TODO update
     },
     create : async (data) => {
-        // FIXME ajouter la feature pour ajouter le film associe
         console.log(data);
         const transaction = await db.sequelize.transaction()
         let isCreate
         try {
 
             isCreate = await db.Awards_Movies.create(data)
-            console.log(isCreate);
-            await isCreate.addMovies(data.ID_Movie, {transaction})
+            //TODO Demander si c'est intelligent de faire ça
+            const movie = await db.Movies.findByPk(data.ID_Movie, {transaction})
+            //console.log("award_movie ============>",data.award_movie);
+            if(movie)
+                await movie.addAwards_Movies( data.award_movie, {transaction})
 
             await transaction.commit()
             

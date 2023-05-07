@@ -45,12 +45,25 @@ const awardPersonneService = {
         //TODO update
     },
     create : async (data) => {
-        // TODO ajouter la feature pour ajouter la personne associe
-        const isCreate = await db.Awards_Personnes.create(data)
+        console.log(data);
+        const transaction = await db.sequelize.transaction()
+        let isCreate
+        try {
+
+            isCreate = await db.Awards_Personnes.create(data)
+            const personne = await db.Personnes.findByPk(data.ID_Personne, {transaction})
+            if(personne)
+                await personne.addAwards_Personnes( data.award_personne, {transaction})
+
+            await transaction.commit()
+            
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
         if(isCreate)
             return true
-        else
-            return false
     },
     delete : async (id) => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
