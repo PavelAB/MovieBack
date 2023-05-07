@@ -19,12 +19,28 @@ const personneService = {
         //TODO faire l'update
     },
     create : async (data) => {
-        //TODO Modifier le create
-        const isCreated = await db.Personnes.create(data)
-        if(isCreated)
-            return true
-        else
+        const transaction = await db.sequelize.transaction()
+
+        let isCreate
+        try {
+            isCreate = await db.Personnes.create(data)
+            await isCreate.addWrittenMovies(data.WrittenMovie, transaction )
+            await isCreate.addActedMovies(data.ActedMovies, transaction )
+            // Rechercher le film avec l'id passé en "isDirector", pour ensuite modifier le directeur depuis db.Movie.
+            const movie = await db.Movies.findByPk(data.isDirector, { transaction });
+            // Définir la personne comme directeur du film
+            await movie.setDirector(isCreate, { transaction });
+
+
+            await transaction.commit()
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
             return false
+        }
+        if(isCreate)
+            return true
+
     },
     delete : async () => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false

@@ -39,12 +39,22 @@ const companyService = {
         //TODO Update
     },
     create : async (data) => {
-        //TODO Modifier le create
-        const isCreated = await db.Companies.create(data)
-        if(isCreated)
-            return true
-        else
+        const transaction = await db.sequelize.transaction()
+        let isCreate
+        try {
+
+            isCreate = await db.Companies.create(data)
+            await isCreate.addMovies(data.movie, {transaction})
+
+            await transaction.commit()
+            
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
             return false
+        }
+        if(isCreate)
+            return true
     },
     delete : async (id) => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false

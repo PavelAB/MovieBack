@@ -33,7 +33,7 @@ const movieService = {
             await movie.addAwards_Movies( data.award_movie, {transaction})
             await movie.addWriters( data.writer, { through: 'MM_Writen_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
             await movie.addActors( data.actor, { through: 'MM_Staring_by_Personnes_Movies', foreignKey: 'ID_Movie', otherKey: 'ID_Personne', transaction });
-            await movie.setDirector( data.director)
+            await movie.setDirector( data.director )
 
             await transaction.commit()
 

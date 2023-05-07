@@ -78,7 +78,7 @@ db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 // Association OneToOne
 
 // Personnes - Movies
-db.Personnes.hasOne(db.Movies, { foreignKey: { name: 'directered_by'}})
+db.Personnes.hasOne(db.Movies, { foreignKey: { name: 'directered_by'},as: 'isDirector'})
 db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}, as: 'Director'})
 
 
