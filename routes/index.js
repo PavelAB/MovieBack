@@ -1,3 +1,4 @@
+const authRouter = require('./auth.router')
 const awardMovieRouter = require('./awards_movies.router')
 const awardPersonneRouter = require('./awards_personnes.router')
 const commentRouter = require('./comments.router')
@@ -22,5 +23,6 @@ router.use('/personnes',personneRouter)
 router.use('/ratings',ratingRouter)
 router.use('/tags',tagsRouter)
 router.use('/users',userRouter)
+router.use('/auth',authRouter)
 
 module.exports = router
