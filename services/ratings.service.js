@@ -42,8 +42,19 @@ const ratingService = {
         if(isCreated)
             return true
     },
-    delete : async () => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
+    delete : async (id) => {
+        const isDeleted = await db.Ratings.findByPk(id)
+
+        await db.Ratings.destroy({
+            where: {
+                ID_Rating: id
+            }
+        })
+
+        if (isDeleted)
+            return true
+        else
+            return false
 
     },
 }

@@ -34,8 +34,19 @@ const tagService = {
         if(isCreate)
             return true
     },
-    delete : async () => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
+    delete : async (id) => {
+        const isDeleted = await db.Tags.findByPk(id)
+
+        await db.Tags.destroy({
+            where: {
+                ID_Tag: id
+            }
+        })
+
+        if(isDeleted)
+            return true
+        else
+            return false
 
     },
 }
