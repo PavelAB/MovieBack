@@ -2,9 +2,9 @@ const { Sequelize } = require ('sequelize')
 
 const { DB_SERVER, DB_DATABASE, DB_USERNAME, DB_PASSWORD } = process.env
 
-const sequelize = new Sequelize(DB_DATABASE,DB_USERNAME,DB_PASSWORD,{
-    host:DB_SERVER,
-    dialect:'mssql'
+const sequelize = new Sequelize( DB_DATABASE, DB_USERNAME, DB_PASSWORD, {
+    host: DB_SERVER,
+    dialect: 'mssql'
 })
 
 
@@ -24,8 +24,8 @@ db.Users = require('./users.model')(sequelize)
 db.Genres = require('./genres.model')(sequelize)
 db.Companies = require('./companies.model')(sequelize)
 
+
 // Association ManyToMany
-// TODO Changer les noms du colonnes dans les tables MM
 
 // Movies - Genres
 db.Movies.belongsToMany(db.Genres, { through: "MM_Has_Genres_Movies" , foreignKey: { name: "ID_Movie" }})
@@ -40,46 +40,46 @@ db.Movies.belongsToMany(db.Companies, { through: 'MM_Distributed_by_Companies_Mo
 db.Companies.belongsToMany(db.Movies, { through: 'MM_Distributed_by_Companies_Movies' , foreignKey: { name: "ID_Company" }})
 
 // Movies - Personnes
-db.Movies.belongsToMany(db.Personnes, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" }})
-db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" }})
+db.Movies.belongsToMany(db.Personnes, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" },as: 'Writers'})
+db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" },as: 'WrittenMovies'})
 
 // Movies - Personnes
-db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" }})
-db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" }})
+db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" },as: 'Actors'})
+db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" },as: 'ActedMovies'})
 
 
 // Association OneToMany
 
 // Movies - Awards_Movies
-db.Movies.hasMany(db.Awards_Movies)
-db.Awards_Movies.belongsTo(db.Movies)
+db.Movies.hasMany(db.Awards_Movies, { foreignKey: { name: 'ID_Movie'}})
+db.Awards_Movies.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Personnes - Awards_Personnes
-db.Personnes.hasMany(db.Awards_Personnes)
-db.Awards_Personnes.belongsTo(db.Personnes)
+db.Personnes.hasMany(db.Awards_Personnes, { foreignKey: { name: 'ID_Personne'}})
+db.Awards_Personnes.belongsTo(db.Personnes, { foreignKey: { name: 'ID_Personne'}})
 
 // Movies - Ratings
-db.Movies.hasMany(db.Ratings)
-db.Ratings.belongsTo(db.Movies)
+db.Movies.hasMany(db.Ratings, { foreignKey: { name: 'ID_Movie'}})
+db.Ratings.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Users - Ratings
-db.Users.hasMany(db.Ratings)
-db.Ratings.belongsTo(db.Users)
+db.Users.hasMany(db.Ratings, { foreignKey: { name: 'ID_User'}})
+db.Ratings.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 // Movies - Comments
-db.Movies.hasMany(db.Comments)
-db.Comments.belongsTo(db.Movies)
+db.Movies.hasMany(db.Comments, { foreignKey: { name: 'ID_Movie'}})
+db.Comments.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
 // Users - Comments
-db.Users.hasMany(db.Comments)
-db.Comments.belongsTo(db.Users)
+db.Users.hasMany(db.Comments, { foreignKey: { name: 'ID_User'}})
+db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 
 // Association OneToOne
 
 // Personnes - Movies
-db.Personnes.hasOne(db.Movies, { foreignKey: { name: 'directered_by'}})
-db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}})
+db.Personnes.hasOne(db.Movies, { foreignKey: { name: 'directered_by'},as: 'isDirector'})
+db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}, as: 'Director'})
 
 
 module.exports = db

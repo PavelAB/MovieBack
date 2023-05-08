@@ -1,20 +1,21 @@
 const { Request, Response } = require('express')
 const SuccessResponse = require('../utils/SuccessResponse')
-const awardPersonneService = require('../services/awards_personnes.service')
+const commentService = require('../services/comments.service')
+
 
 //TODO Gestion de l'Error response
 //TODO Verifier le statusCode
-const awardPersonneController = {
+const commentController = {
     /**
      * GetAll
      * @param { Request } req
      * @param { Response } res
      */
     getAll: async ( req, res ) => {
-        const { award_Personne, count } = await awardPersonneService.getAll()
+        const { comment, count } = await commentService.getAll()
         
-        if(award_Personne)
-            res.status(200).json( new SuccessResponse( award_Personne, count ))
+        if(comment)
+            res.status(200).json( new SuccessResponse( comment, count ))
         else
             res.sendStatus(400)
     },
@@ -25,7 +26,7 @@ const awardPersonneController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        const { values, count } = await awardPersonneService.getByParams(req.params)
+        const { values, count } = await commentService.getByParams(req.params)
         if(values)
             res.status(200).json( new SuccessResponse ( values, count ))
         else 
@@ -38,12 +39,8 @@ const awardPersonneController = {
      * @param { Response } res
      */
     getByParams: async ( req, res ) => {
-        const { values, count } = await awardPersonneService.getByParams( req.query )
-        if(values)
-            res.status(200).json( new SuccessResponse ( values, count ))
-        else 
-            res.sendStatus(400)
-        
+        res.sendStatus(501)
+        //TODO ajouter le recherche par l'id_user ou ID_Movie
     },
 
     /**
@@ -53,7 +50,7 @@ const awardPersonneController = {
      */
     create: async ( req, res ) => {
         const data = req.body 
-        const isCreated = await awardPersonneService.create(data)
+        const isCreated = await commentService.create(data)
         if(isCreated)
             res.sendStatus(200)
         else
@@ -76,11 +73,10 @@ const awardPersonneController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
-        const id = req.params.ID_Award_Personne
-        console.log(id);
-        const isDeleted = await awardPersonneService.delete(id)
+        const id = req.params.ID_Comment
+        const isDeleted = await commentService.delete(id)
         //TODO Ajouter un if pour verifier si le nombre a supprime existe bien
         res.sendStatus(200)
     }
 }
-module.exports = awardPersonneController
+module.exports = commentController
