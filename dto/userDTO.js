@@ -9,4 +9,11 @@ class userDTO{
 
     }
 }
-module.exports = userDTO
+class UserDTOToken {
+    constructor({ ID_User, role }, token ){
+        this.ID_User = ID_User
+        this.role = role
+        this.token = token
+    }
+}
+module.exports = { userDTO, UserDTOToken}

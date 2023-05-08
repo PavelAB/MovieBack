@@ -4,8 +4,8 @@ const { JWT_SECRET, JWT_ISSUER, JWT_AUDIENCE } = process.env
 
 const jwt = {
 
-    generate: ({ID_User, role}) => {
-        return new Promise((resolve, reject) => {
+    generate: ({ ID_User, role }) => {
+        return new Promise(( resolve, reject ) => {
             const payload = {   id: ID_User,
                                 role }
             const secret = JWT_SECRET
@@ -16,28 +16,28 @@ const jwt = {
                 issuer: JWT_ISSUER
             } 
             
-            jsonwebtoken.sign(payload, secret, options, (error, token) => {
-                if(error)
-                    reject(error)
-                resolve(token)
+            jsonwebtoken.sign( payload, secret, options, ( error, token ) => {
+                if( error )
+                    reject( error )
+                resolve( token )
             })
         })
     },
 
-    decode:(token) => {
-        if(!token || token === '' )
+    decode:( token ) => {
+        if( !token || token === '' )
             return Promise.reject('Pas de token')
 
-        return new Promise((resolve, reject) => {
+        return new Promise(( resolve, reject ) => {
             const options = {
                 audience: JWT_AUDIENCE,
                 issuer: JWT_ISSUER
             }
 
-            jsonwebtoken.verify(token, JWT_SECRET, options, (error, payload) => {
-                if(error)
-                    reject(error)
-                resolve(payload)
+            jsonwebtoken.verify( token, JWT_SECRET, options, ( error, payload ) => {
+                if( error )
+                    reject( error )
+                resolve( payload )
             })
         })
     }
