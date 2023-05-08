@@ -7,7 +7,10 @@ const db = require("../models")
 const commentService = {
     getAll : async () => {
         const { rows, count } = await db.Comments.findAndCountAll({
-            include: [ db.Movies, db.Users ],
+            include: [ 
+                { model: db.Movies, as: 'Movie' },
+                { model: db.Users, as: 'User' },
+            ],
             distinct: true
         })
         const comment = rows.map( com => new commentDTO(com))
@@ -36,12 +39,26 @@ const commentService = {
         //TODO Ajouter l'update
     },
     create : async (data) => {
-        //TODO Modifier le create
-        const isCreated = await db.Comments.create(data)
+        const transaction = await db.sequelize.transaction()
+        let isCreated
+        try {
+            isCreated = await db.Comments.create(data)
+
+            const movie = await db.Movies.findByPk(data.Movies, { transaction })
+            await isCreated.setMovie(movie, { transaction })
+
+            const user = await db.Users.findByPk(data.Users, {transaction})
+            await isCreated.setUser(user, {transaction})
+            
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
         if(isCreated)
             return true
-        else
-            return false
     },
     delete : async (id) => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
