@@ -46,8 +46,17 @@ const personneService = {
 
     },
     delete : async () => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
-
+        const isDelete =  await db.Users.findByPk(id)
+        await db.Users.destroy({
+            where: {
+                ID_User: id
+            }
+        })
+        if(isDelete)
+            return true
+        else
+            return false
+        
     },
 }
 module.exports = personneService 

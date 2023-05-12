@@ -70,7 +70,13 @@ const personneController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
-        res.sendStatus(501)
+        const id = req.params.ID_Personne
+        const isDeleted = await personneService.delete(id)
+        if (isDeleted) {
+            res.status(200).json("Élément est supprimé.")            
+        }
+        else    
+            res.status(400).json("Élément non trouvé")
     }
 }
 module.exports = personneController
