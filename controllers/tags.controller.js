@@ -70,7 +70,13 @@ const tagController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
-        res.sendStatus(501)
+        const id = req.params.ID_Tag
+        const isDeleted = await tagService.delete(id)
+        if (isDeleted) {
+            res.status(200).json("Élément est supprimé.")            
+        }
+        else    
+            res.status(400).json("Élément non trouvé")
     }
 }
 module.exports = tagController

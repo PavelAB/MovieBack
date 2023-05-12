@@ -75,8 +75,11 @@ const commentController = {
     delete: async ( req, res ) => {
         const id = req.params.ID_Comment
         const isDeleted = await commentService.delete(id)
-        //TODO Ajouter un if pour verifier si le nombre a supprime existe bien
-        res.sendStatus(200)
+        if (isDeleted) {
+            res.status(200).json("Élément est supprimé.")            
+        }
+        else    
+            res.status(400).json("Élément non trouvé")
     }
 }
 module.exports = commentController

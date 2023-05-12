@@ -1,16 +1,43 @@
+const db = require("../models")
+const {userDTO} = require('../dto/userDTO')
+
+
 const userService = {
     getAll : async () => {
-        //TODO Faire le getAll  
+        const { rows, count } = await db.Users.findAndCountAll({
+            include: [ db.Ratings, db.Comments ],
+            distinct: true
+        })
+        const users = rows.map(user => new userDTO(user))
+        return {
+            users, count
+        }
+
     },
     update : async () => {
         //TODO Faire l'update
     },
-    create : async () => {
-        //TODO Faire le create
+    create : async (data) => {
+        const isCreated = await db.Users.create(data)
+        if(isCreated)
+            return true
+        else
+            return false
 
     },
-    delete : async () => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
+    delete : async (id) => {
+       const isDeleted = await db.Users.findByPk(id)
+
+       await db.Users.destroy({
+        where:{
+            ID_User: id
+        }
+       })
+
+       if(isDeleted)
+            return true
+        else
+            return false
 
     }
 }

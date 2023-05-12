@@ -1,10 +1,11 @@
 const genreController = require('../controllers/genres.controller')
+const authRoles = require('../middlewares/authRoles')
 
 const  genreRouter = require('express').Router()
 
 genreRouter.route('/')
     .get(genreController.getAll)
-    .post(genreController.create)
+    .post(authRoles('User'), genreController.create)
 genreRouter.route('/params')
     .get(genreController.getByParams)
 genreRouter.route('/:ID_Genre')
