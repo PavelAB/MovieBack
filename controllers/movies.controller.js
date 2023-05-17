@@ -13,7 +13,7 @@ const movieController = {
      */
     getAll: async ( req, res ) => {
         const { values, count } = await movieService.getAll()
-        
+        console.log("coucou");
         if(values)
             res.status(200).json( new SuccessResponse( values, count ))
         else
@@ -62,7 +62,23 @@ const movieController = {
         res.sendStatus(501)
         //TODO faire l'update 
     },
+    /**
+     * update Avatar
+     * @param { Request } req
+     * @param { Response } res
+     */
+    updateAvatar : async ( req, res ) => {
+        console.log(req.file.filename);
+        const id = req.params.ID_Movie
+        console.log("id :",id);
+        const filename = req.file.filename
 
+        const updated = await movieService.updateAvatar(id, filename)
+        if(!updated){
+            return res.sendStatus(400)
+        }
+        res.sendStatus(204)
+    },
     /**
      * delete
      * @param { Request } req

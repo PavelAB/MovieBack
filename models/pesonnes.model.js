@@ -27,6 +27,10 @@ module.exports = ( sequelize ) => {
             type: DataTypes.STRING(50),
             allowNull: false
         },
+        picture:{
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         job: {
             type: DataTypes.STRING(50),
             allowNull: false

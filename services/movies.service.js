@@ -46,9 +46,23 @@ const movieService = {
             return movie
 
     },
+    
     update : async () => {
         //TODO faire l'update
     },
+
+    updateAvatar : async (id, filename) => {
+        const data = {
+            cover : `/images/covers/${filename}`
+        }
+        const updatedRow = await db.Movies.update(data, {
+            where:{
+                ID_Movie : id
+            }
+        })
+        return updatedRow[0] === 1
+    },
+
     delete : async () => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
     },
