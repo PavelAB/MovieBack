@@ -7,7 +7,7 @@ const app = express()
 
 app.use(cors())
 
-app.use('/images', express.static("images"))
+app.use(express.static('public'))
 app.use(express.json())
 
 

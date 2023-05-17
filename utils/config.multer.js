@@ -8,12 +8,12 @@ const config = (folder) => {
         
         destination : ( req, file, callback ) => {
             console.log("storage: destination");
-            callback( null, `images/${folder}`)
+            callback( null, `public/images/${folder}`)
         },
         filename : ( req, file, callback ) => {
 
             console.log("multer file : ", file);
-            const name = "test"
+            const name = uuid.v4()
 
             const ext = file.originalname.split('.').at(-1)
 
