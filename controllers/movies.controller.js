@@ -26,7 +26,13 @@ const movieController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        res.sendStatus(501)
+        const id = req.params.ID_Movie
+        console.log(id);
+        const movie = await movieService.getById(id)
+        if(movie)
+            res.status(200).json(movie)
+        else
+            res.sendStatus(400)
     },
 
     /**
