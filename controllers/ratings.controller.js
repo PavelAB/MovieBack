@@ -46,8 +46,10 @@ const ratingController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
-        const data = req.body 
+        const data = req.body
+        console.log("req.body", data); 
         const isCreated = await ratingService.create(data)
+        console.log("isCreatedController",isCreated);
         if(isCreated)
             res.sendStatus(200)
         else

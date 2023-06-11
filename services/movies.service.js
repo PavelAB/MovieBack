@@ -17,6 +17,21 @@ const movieService = {
             values, count 
         }
     },
+
+    getById : async (id) => {
+        console.log("coucou");
+        const value = await db.Movies.findByPk(id,{
+            include: [ db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+            {model:db.Personnes, as: "Actors",throught:'MM_Staring_by_Personnes_Movies'},
+            {model:db.Personnes, as: "Writers",throught:'MM_Written_by_Personnes_Movies'},
+            {model:db.Personnes, as: "Director",throught:'Movies'}],
+            distinct: true
+        })
+        console.log(value);
+        const movie = new movieDTO(value)
+        return movie
+    },
+    
     create : async ( data ) => {
         const transaction = await db.sequelize.transaction()
         let movie
@@ -46,9 +61,23 @@ const movieService = {
             return movie
 
     },
+    
     update : async () => {
         //TODO faire l'update
     },
+
+    updateAvatar : async (id, filename) => {
+        const data = {
+            cover : `/images/covers/${filename}`
+        }
+        const updatedRow = await db.Movies.update(data, {
+            where:{
+                ID_Movie : id
+            }
+        })
+        return updatedRow[0] === 1
+    },
+
     delete : async () => {
         //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
     },
