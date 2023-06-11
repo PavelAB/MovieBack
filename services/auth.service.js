@@ -20,15 +20,14 @@ const authService = {
         return null
     },
     login: async ( login, password ) => {
-        console.log(login);
         const user = await db.Users.findOne({
             where: {
                 login
             }
         })
-        console.log(user);
-        if( !user )
+        if( !user ){
             return null
+        }
         try {
             if( await argon2.verify(user.password, password))
                 return user

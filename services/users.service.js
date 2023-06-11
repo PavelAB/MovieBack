@@ -29,6 +29,22 @@ const userService = {
         else
             return false
     },
+    searchByEmail : async (email) => {
+        console.log("I'm here");
+        const thatEmail = await db.Users.findOne({
+            where : {
+                email: email
+            }
+        })
+        console.log("I'm here2");
+        console.log("thatEmail",thatEmail);
+        if(thatEmail !== null){
+            return true
+        }
+        else
+            return false
+    },
+
     update : async () => {
         //TODO Faire l'update
     },
