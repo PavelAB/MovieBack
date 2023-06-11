@@ -38,6 +38,7 @@ const awardPersonneController = {
      * @param { Response } res
      */
     getByParams: async ( req, res ) => {
+        console.log("Querry",req.query);
         const { values, count } = await awardPersonneService.getByParams( req.query )
         if(values)
             res.status(200).json( new SuccessResponse ( values, count ))

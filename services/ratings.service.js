@@ -25,13 +25,10 @@ const ratingService = {
         let isCreated
         try {
             isCreated = await db.Ratings.create(data)
-
-            const movie = await db.Movies.findByPk(data.Movies, { transaction })
+            const movie = await db.Movies.findByPk(data.ID_Movie, { transaction })
             await isCreated.setMovie(movie, { transaction })
-
-            const user = await db.Users.findByPk(data.Users, {transaction})
+            const user = await db.Users.findByPk(data.ID_User, {transaction})
             await isCreated.setUser(user, {transaction})
-            
             await transaction.commit()
 
         } catch (error) {
@@ -39,6 +36,7 @@ const ratingService = {
             await transaction.rollback()
             return false
         }
+
         if(isCreated)
             return true
     },

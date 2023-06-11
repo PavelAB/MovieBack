@@ -34,11 +34,24 @@ module.exports = ( sequelize ) => {
         rate_writing: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        ID_Movie: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        ID_User: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
 
-
     },{ 
-        tableName: 'Ratings'
+        tableName: 'Ratings',
+        indexes: [
+            {
+                unique: true,
+                fields: ['ID_Movie', 'ID_User']
+            }
+        ]
     })
     return Ratings
 }
