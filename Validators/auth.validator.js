@@ -46,6 +46,7 @@ const registerValidator = yup.object({
     birth_date: yup.date().required(),
     login: yup.string().max(50).trim().required().unique(),
     email: yup.string().max(50).trim().required().matches(emailRegex).uniqueEmail(),
-    password: yup.string().max(50).trim().required()
+    password: yup.string().max(50).trim().required(),
+    role: yup.string().trim().oneOf(['User', 'Admin'])
 })
 module.exports = {loginValidator, registerValidator}

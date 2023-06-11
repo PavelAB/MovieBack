@@ -5,7 +5,6 @@ const { Sequelize, DataTypes, INTEGER, ModelStatic } = require ('sequelize');
  * @returns { ModelStatic<any> }
  */
 
-//TODO Validation sur chaque colonne
 
 
 module.exports = ( sequelize ) => {
@@ -17,15 +16,25 @@ module.exports = ( sequelize ) => {
         },
         type_award: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         name_award: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         year_award: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                min: 1900,
+                max: 2100
+            }
         }
     },{ 
         tableName: 'Awards_Personnes'
