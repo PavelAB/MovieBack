@@ -23,6 +23,7 @@ db.Tags = require('./tags.model')(sequelize)
 db.Users = require('./users.model')(sequelize)
 db.Genres = require('./genres.model')(sequelize)
 db.Companies = require('./companies.model')(sequelize)
+db.MM_Users_Comments = require('./mm_users_comment.model')(sequelize)
 
 
 // Association ManyToMany
@@ -47,6 +48,11 @@ db.Personnes.belongsToMany(db.Movies, { through: 'MM_Writen_by_Personnes_Movies'
 db.Movies.belongsToMany(db.Personnes, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Movie" },as: 'Actors'})
 db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies' , foreignKey: { name: "ID_Personne" },as: 'ActedMovies'})
 
+// Users - Comments
+db.Users.belongsToMany(db.Comments, { through: db.MM_Users_Comments , foreignKey: { name: "ID_User" },as: 'User'})
+db.Comments.belongsToMany(db.Users, { through: db.MM_Users_Comments , foreignKey: { name: "ID_Comments" },as: 'Comment'})
+
+
 
 // Association OneToMany
 
@@ -70,9 +76,6 @@ db.Ratings.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 db.Movies.hasMany(db.Comments, { foreignKey: { name: 'ID_Movie'}})
 db.Comments.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
-// Users - Comments
-db.Users.hasMany(db.Comments, { foreignKey: { name: 'ID_User'}})
-db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 
 
 // Association OneToOne

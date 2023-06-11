@@ -18,15 +18,6 @@ module.exports = ( sequelize ) => {
         body: {
             type: DataTypes.TEXT,
             allowNull: false
-        },
-        like_comment: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-
-        dislike_comment: {
-            type: DataTypes.INTEGER,
-            allowNull: true
         }
 
     },{ 

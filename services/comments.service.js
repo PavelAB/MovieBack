@@ -39,6 +39,7 @@ const commentService = {
         //TODO Ajouter l'update
     },
     create: async (data) => {
+        console.log("data",data);
         const transaction = await db.sequelize.transaction()
         let isCreated
         try {
@@ -48,7 +49,8 @@ const commentService = {
             await isCreated.setMovie(movie, { transaction })
 
             const user = await db.Users.findByPk(data.Users, { transaction })
-            await isCreated.setUser(user, { transaction })
+            console.log("user",user);
+            await isCreated.setComment(user, { transaction })
 
             await transaction.commit()
 
