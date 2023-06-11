@@ -1,15 +1,16 @@
 const ratingController = require('../controllers/ratings.controller')
+const authRoles = require('./../middlewares/authRoles')
 
 const  ratingRouter = require('express').Router()
 
 ratingRouter.route('/')
-    .get(ratingController.getAll)
-    .post(ratingController.create)
+    .get(authRoles('User'),ratingController.getAll)
+    .post(authRoles('Admin'),ratingController.create)
 ratingRouter.route('/params')
-    .get(ratingController.getByParams)
+    .get(authRoles('User'),ratingController.getByParams)
 ratingRouter.route('/:ID_Rating')
-    .get(ratingController.getByID)
-    .put(ratingController.update)
-    .delete(ratingController.delete)
+    .get(authRoles('User'),ratingController.getByID)
+    .put(authRoles('Admin'),ratingController.update)
+    .delete(authRoles('Admin'),ratingController.delete)
 
 module.exports = ratingRouter

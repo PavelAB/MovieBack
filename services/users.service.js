@@ -14,6 +14,21 @@ const userService = {
         }
 
     },
+    searchByLogin : async (login) => {
+        console.log("I'm here");
+        const thatLogin = await db.Users.findOne({
+            where : {
+                login : login
+            }
+        })
+        console.log("I'm here2");
+        console.log("thatLogin",thatLogin);
+        if(thatLogin !== null){
+            return true
+        }
+        else
+            return false
+    },
     update : async () => {
         //TODO Faire l'update
     },
