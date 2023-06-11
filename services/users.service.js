@@ -1,4 +1,5 @@
 const db = require("../models")
+const argon2 = require('argon2');
 const {userDTO} = require('../dto/userDTO')
 
 
@@ -49,6 +50,13 @@ const userService = {
         //TODO Faire l'update
     },
     create : async (data) => {
+        try {
+            const hash = await argon2.hash( data.password )
+            data.password = hash
+        } catch ( error ) {
+            console.log( error );
+        }
+        
         const isCreated = await db.Users.create(data)
         if(isCreated)
             return true
@@ -56,6 +64,7 @@ const userService = {
             return false
 
     },
+    //TODO add methode addPicture
     delete : async (id) => {
        const isDeleted = await db.Users.findByPk(id)
 
