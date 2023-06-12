@@ -1,5 +1,5 @@
 const { Request, Response } = require('express')
-const {SuccessResponse} = require('../utils/SuccessResponse')
+const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
@@ -30,7 +30,10 @@ const commentController = {
     getByID: async ( req, res ) => {
         const { values, count } = await commentService.getByParams(req.params)
         if(values)
-            res.status(200).json( new SuccessResponse ( values, count ))
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The element was not found.', 200))
         else 
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
@@ -56,20 +59,20 @@ const commentController = {
         const isCreated = await commentService.create(data)
 
         if(isCreated)
-            res.status(200).json(new SuccessResponseMsg('The element has been created.', 200))
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
             res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
-    /**
-     * update
-     * @param { Request } req
-     * @param { Response } res
-     */
-    update: async ( req, res ) => {
-        res.sendStatus(501)
-        //TODO faire l'update 
-    },
+    // /**
+    //  * update
+    //  * @param { Request } req
+    //  * @param { Response } res
+    //  */
+    // update: async ( req, res ) => {
+    //     res.sendStatus(501)
+    //     //TODO faire l'update 
+    // },
 
     /**
      * delete

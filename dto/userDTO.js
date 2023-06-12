@@ -1,5 +1,5 @@
 class userDTO {
-    constructor({ ID_User, first_name, last_name, birth_date, login, email, Ratings, Comments }) {
+    constructor({ ID_User, first_name, last_name, birth_date, login, email, Ratings}) {
         this.ID_User = ID_User,
         this.first_name = first_name,
         this.last_name = last_name,
@@ -7,8 +7,8 @@ class userDTO {
         this.login = login,
         this.email = email,
         //TODO ajouter les DTO pour n'est pas afficher l'objet complet
-        this.Ratings = Ratings,
-        this.Comments = Comments
+        this.Ratings = Ratings
+        //this.Comments = Comments
 
     }
 }

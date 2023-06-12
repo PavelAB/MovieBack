@@ -14,7 +14,7 @@ const userController = {
      */
     getAll: async ( req, res ) => {
         const { users, count } = await userService.getAll()
-
+        
         if(users)
             res.status(200).json(new SuccessResponse( users,count ))
         else
