@@ -82,6 +82,7 @@ const awardPersonneService = {
         console.log(data);
         const transaction = await db.sequelize.transaction()
         let isCreate
+        
         try {
 
             isCreate = await db.Awards_Personnes.create(data)
@@ -101,7 +102,6 @@ const awardPersonneService = {
     },
 
     delete: async (id) => {
-
 
         const isDeleted = await db.Awards_Personnes.findByPk(id)
 

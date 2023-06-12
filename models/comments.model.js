@@ -6,7 +6,7 @@ const { Sequelize, DataTypes, INTEGER } = require ('sequelize');
  */
 
 
-//TODO Validation sur chaque colonne
+
 
 module.exports = ( sequelize ) => {
     const Comments = sequelize.define('Comments', {
@@ -17,7 +17,10 @@ module.exports = ( sequelize ) => {
         },
         body: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         }
 
     },{ 
