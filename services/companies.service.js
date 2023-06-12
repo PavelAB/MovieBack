@@ -3,7 +3,6 @@ const db = require("../models")
 const { Op } = require("sequelize");
 
 
-
 const companyService = {
     getAll: async () => {
         const { rows, count } = await db.Companies.findAndCountAll({

@@ -4,7 +4,6 @@ const companyService = require('../services/companies.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
 
-
 //TODO Verifier le statusCode
 
 const companyController = {

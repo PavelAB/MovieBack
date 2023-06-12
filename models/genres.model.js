@@ -6,7 +6,6 @@ const { Sequelize, DataTypes, INTEGER } = require ('sequelize');
  */
 
 
-//TODO Validation sur chaque colonne
 
 module.exports = ( sequelize ) => {
     const Genres = sequelize.define('Genres', {
@@ -17,7 +16,10 @@ module.exports = ( sequelize ) => {
         },
         name_genre: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         }
 
     },{ 
