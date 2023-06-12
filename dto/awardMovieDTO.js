@@ -1,6 +1,12 @@
 class awardMovieDTO{
-    constructor({ID_Movie, type_award, name_award, year_award, ID_Award_Movie}){
-        this.ID_Movie = ID_Movie,
+    constructor({Movie, type_award, name_award, year_award, ID_Award_Movie}){
+        if(Movie){
+            this.Movie = {
+                title: Movie.title
+            }
+        }
+        else
+            this.Movie = null
         this.type_award = type_award,
         this.name_award = name_award,
         this.year_award = year_award,

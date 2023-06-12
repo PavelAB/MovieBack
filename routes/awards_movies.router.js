@@ -1,4 +1,4 @@
-const createAwards_MoviesValidator = require('../Validators/awards_movie.validator')
+const { createAwards_MoviesValidator, updateAwards_MoviesValidator } = require('../Validators/awards_movie.validator')
 const awardMovieController = require('../controllers/awards_movies.controller')
 const bodyValidator = require('../middlewares/bodyValidator')
 const authRoles = require('./../middlewares/authRoles')
@@ -13,7 +13,7 @@ awardMovieRouter.route('/params')
     .get(awardMovieController.getByParams)
 awardMovieRouter.route('/:ID_Award_Movie')
     .get(awardMovieController.getByID)
-    .put()
+    .put(authRoles('Admin'),bodyValidator(updateAwards_MoviesValidator),awardMovieController.update)
     .delete(authRoles('Admin'),awardMovieController.delete)
 
 

@@ -1,6 +1,6 @@
 const { Request, Response } = require('express')
 const awardMovieService = require('../services/awards_movies.service')
-const { SuccessResponse, SuccessResponseMsg } = require('../utils/SuccessResponse')
+const { SuccessResponse, SuccesResponseMsg } = require('../utils/SuccessResponse')
 const {ErrorResponse} = require('./../utils/ErrorResponse')
 
 
@@ -32,9 +32,12 @@ const awardMovieController = {
         const { values, count } = await awardMovieService.getByParams(req.params)
         
         if(values)
-            res.status(200).json(new SuccessResponse( values, count ))
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The element was not found.', 200))
         else 
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+            res.status(400).json(new ErrorResponse('The element was not found.', 400))
     },
 
     /**
@@ -47,7 +50,10 @@ const awardMovieController = {
         const { values, count } = await awardMovieService.getByParams( req.query )
         
         if(values)
-            res.status(200).json(new SuccessResponse( values, count ))
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
         else
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
@@ -63,7 +69,7 @@ const awardMovieController = {
         const isCreated = await awardMovieService.create(data)
         
         if(isCreated)
-            res.status(200).json(new SuccessResponseMsg('The element has been created.', 200))
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
             res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
@@ -74,8 +80,18 @@ const awardMovieController = {
      * @param { Response } res
      */
     update: async ( req, res ) => {
-        //TODO Controller update
-        res.sendStatus(501)
+
+        const id = req.params.ID_Award_Movie
+        const body = req.body
+
+        const updateMovieAward = await awardMovieService.update( id, body )
+
+        if(updateMovieAward)
+            res.status(200).json(new SuccesResponseMsg('The update is successful.', 200))
+        else
+            res.status(400).json(new ErrorResponse('An error occurred during the update.', 400))      
+
+
     },
 
     /**
