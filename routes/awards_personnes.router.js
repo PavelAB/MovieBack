@@ -1,4 +1,4 @@
-const createAwards_PersonnesValidator = require('../Validators/awards_personnes.validator')
+const { createAwards_PersonnesValidator, updateAwards_PersonnesValidator } = require('../Validators/awards_personnes.validator')
 const awardPersonneController = require('../controllers/awards_personnes.controller')
 const bodyValidator = require('../middlewares/bodyValidator')
 const authRoles = require('./../middlewares/authRoles')
@@ -14,7 +14,7 @@ awardPersonneRouter.route('/params')
     .get(awardPersonneController.getByParams)
 awardPersonneRouter.route('/:ID_Award_Personne')
     .get(awardPersonneController.getByID)
-    .put(authRoles('Admin'),awardPersonneController.update)
+    .put(authRoles('Admin'),bodyValidator(updateAwards_PersonnesValidator),awardPersonneController.update)
     .delete(authRoles('Admin'),awardPersonneController.delete)
 
     
