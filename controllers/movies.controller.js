@@ -1,6 +1,8 @@
 const { Request, Response } = require('express')
-const SuccessResponse = require('../utils/SuccessResponse')
+const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const movieService = require('../services/movies.service')
+const { ErrorResponse } = require('../utils/ErrorResponse')
+
 
 
 //TODO Gestion de l'Error response
@@ -17,7 +19,8 @@ const movieController = {
         if(values)
             res.status(200).json( new SuccessResponse( values, count ))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
     },
 
     /**
@@ -26,13 +29,15 @@ const movieController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
+
         const id = req.params.ID_Movie
         console.log(id);
         const movie = await movieService.getById(id)
+        
         if(movie)
             res.status(200).json(movie)
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -53,10 +58,11 @@ const movieController = {
     create: async ( req, res ) => {
         const data = req.body 
         const isCreated = await movieService.create(data)
+
         if(isCreated)
-            res.sendStatus(200)
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(401)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
     /**

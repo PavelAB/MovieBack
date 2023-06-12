@@ -1,6 +1,8 @@
 const { Request, Response } = require('express')
-const SuccessResponse = require('../utils/SuccessResponse')
+const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const tagService = require('../services/tags.service')
+const { ErrorResponse } = require('../utils/ErrorResponse')
+
 
 
 //TODO Gestion de l'Error response
@@ -17,7 +19,8 @@ const tagController = {
         if(values)
             res.status(200).json( new SuccessResponse( values, count ))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
     },
 
     /**
@@ -26,7 +29,7 @@ const tagController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        
+        res.sendStatus(501)
     },
 
     /**
@@ -45,12 +48,14 @@ const tagController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
+        
         const data = req.body 
         const isCreated = await tagService.create(data)
+
         if(isCreated)
-            res.sendStatus(200)
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(401)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
 
     },
 
@@ -70,13 +75,14 @@ const tagController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
+        
         const id = req.params.ID_Tag
         const isDeleted = await tagService.delete(id)
-        if (isDeleted) {
-            res.status(200).json("Élément est supprimé.")            
-        }
-        else    
-            res.status(400).json("Élément non trouvé")
+
+        if(isDeleted)
+            res.status(200).json(new SuccesResponseMsg("The element has been deleted.", 200))
+        else
+            res.status(404).json(new ErrorResponse("The element was not found.", 404))
     }
 }
 module.exports = tagController

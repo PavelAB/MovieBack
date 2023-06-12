@@ -1,6 +1,8 @@
 const { Request, Response } = require('express')
-const SuccessResponse = require('../utils/SuccessResponse')
+const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const userService = require('../services/users.service')
+const { ErrorResponse } = require('../utils/ErrorResponse')
+
 
 //TODO Gestion de l'Error response
 //TODO Verifier le statusCode
@@ -16,7 +18,7 @@ const userController = {
         if(users)
             res.status(200).json(new SuccessResponse( users,count ))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -46,10 +48,11 @@ const userController = {
     create: async ( req, res ) => {
         const data = req.body
         const isCreate = await userService.create(data)
-        if(isCreate)
-            res.sendStatus(200)
+
+        if(isCreated)
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
     /**
@@ -70,11 +73,11 @@ const userController = {
     delete: async ( req, res ) => {
         const id = req.params.ID_User
         const isDeleted = await userService.delete(id)
-        if (isDeleted) {
-            res.status(200).json("Élément est supprimé.")            
-        }
-        else    
-            res.status(400).json("Élément non trouvé")
+
+        if(isDeleted)
+            res.status(200).json(new SuccesResponseMsg("The element has been deleted.", 200))
+        else
+            res.status(404).json(new ErrorResponse("The element was not found.", 404))
     }
 }
 module.exports = userController

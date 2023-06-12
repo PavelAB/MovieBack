@@ -4,4 +4,12 @@ class SuccessResponse{
         this.count = count
     }
 }
-module.exports = SuccessResponse
+
+class SuccesResponseMsg{
+    constructor( msg, code = 200 ){
+        this.msg = msg
+        this.code = code
+    }
+}
+
+module.exports = {SuccessResponse, SuccesResponseMsg}
