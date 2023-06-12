@@ -1,4 +1,5 @@
 const movieController = require('../controllers/movies.controller')
+const authRoles = require('./../middlewares/authRoles')
 
 const  movieRouter = require('express').Router()
 
@@ -9,13 +10,13 @@ const upload = multer({storage})
 
 movieRouter.route('/')
     .get(movieController.getAll)
-    .post(movieController.create)
+    .post(authRoles('Admin'),movieController.create)
 movieRouter.route('/params')
     .get(movieController.getByParams)
 movieRouter.route('/:ID_Movie')
     .get(movieController.getByID)
-    .put(movieController.update)
-    .patch(upload.single('covers'),movieController.updateAvatar)
-    .delete(movieController.delete)
+    .put(authRoles('Admin'),movieController.update)
+    .patch(authRoles('Admin'),upload.single('covers'),movieController.updateAvatar)
+    .delete(authRoles('Admin'),movieController.delete)
 
 module.exports = movieRouter

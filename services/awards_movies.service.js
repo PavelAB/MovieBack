@@ -5,6 +5,7 @@ const Movies = require("../models")
 
 
 const awardMovieService = {
+
     getAll : async () => {
         const { rows, count } = await db.Awards_Movies.findAndCountAll({
             include: [ db.Movies ],
@@ -15,6 +16,7 @@ const awardMovieService = {
             award_Movie, count 
         }
     },
+
     getByParams: async (data) => {
         if(data.type_award){
             data.type_award = data.type_award.replace("_", " ") 
@@ -41,9 +43,11 @@ const awardMovieService = {
             values, count
         } 
     },
+
     update : async () => {
         //TODO update
     },
+
     create : async (data) => {
         console.log(data);
         const transaction = await db.sequelize.transaction()
@@ -51,9 +55,7 @@ const awardMovieService = {
         try {
 
             isCreate = await db.Awards_Movies.create(data)
-            //TODO Demander si c'est intelligent de faire ça
             const movie = await db.Movies.findByPk(data.ID_Movie, {transaction})
-            //console.log("award_movie ============>",data.award_movie);
             if(movie)
                 await movie.addAwards_Movies( data.award_movie, {transaction})
 
@@ -67,14 +69,20 @@ const awardMovieService = {
         if(isCreate)
             return true
     },
+    
     delete : async (id) => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
+        const isDeleted = await db.Awards_Movies.findByPk(id)
+
         console.log(id);
-        const isDeleted = await db.Awards_Movies.destroy({
+        await db.Awards_Movies.destroy({
             where:{
                 ID_Award_Movie : id
             }
         })
+        if(isDeleted)
+            return true
+        else
+            return false
     }  
 }
 module.exports = awardMovieService 

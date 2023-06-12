@@ -5,6 +5,7 @@ const awardPersonneDTO = require("../dto/awardPersonneDTO");
 
 
 const awardPersonneService = {
+
     getAll : async () => {
         const { rows, count } = await db.Awards_Personnes.findAndCountAll({
             include: [ db.Personnes ],
@@ -15,6 +16,7 @@ const awardPersonneService = {
             award_Personne, count 
         }
     },
+    //TODO Verify the service with Insomnia to ensure everything is functioning correctly.
     getByParams: async (data) => {
 
         let Variable_Test = []
@@ -41,9 +43,11 @@ const awardPersonneService = {
             values, count
         } 
     },
+
     update : async () => {
         //TODO update
     },
+
     create : async (data) => {
         console.log(data);
         const transaction = await db.sequelize.transaction()
@@ -65,13 +69,21 @@ const awardPersonneService = {
         if(isCreate)
             return true
     },
+
     delete : async (id) => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
-        const isDeleted = await db.Awards_Personnes.destroy({
+        
+        
+        const isDeleted = await db.Awards_Personnes.findByPk(id)
+
+        await db.Awards_Personnes.destroy({
             where:{
                 ID_Award_Personne : id
             }
         })
+        if(isDeleted)
+            return true
+        else
+            return false
     }  
 }
 module.exports = awardPersonneService 

@@ -9,7 +9,7 @@ const commentService = {
         const { rows, count } = await db.Comments.findAndCountAll({
             include: [
                 { model: db.Movies, as: 'Movie' },
-                { model: db.Users, as: 'User' },
+                { model: db.Users, as: 'Comment' },
             ],
             distinct: true
         })

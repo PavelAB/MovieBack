@@ -6,7 +6,6 @@ const { Sequelize, DataTypes, INTEGER } = require ('sequelize');
  */
 
 
-//TODO Validation sur chaque colonne
 
 module.exports = ( sequelize ) => {
     const Users = sequelize.define('Users', {
@@ -17,11 +16,17 @@ module.exports = ( sequelize ) => {
         },
         first_name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         last_name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         birth_date: {
             type: DataTypes.DATE,
@@ -29,15 +34,24 @@ module.exports = ( sequelize ) => {
         },
         login: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         picture:{
             type: DataTypes.STRING,
@@ -46,7 +60,11 @@ module.exports = ( sequelize ) => {
         role: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'User'
+            defaultValue: 'User',
+            validate: {
+                notEmpty: true,
+                isIn: [['User','Admin']]
+            }
         }
     },{ 
         tableName: 'Users'

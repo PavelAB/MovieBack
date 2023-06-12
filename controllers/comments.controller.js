@@ -1,6 +1,8 @@
 const { Request, Response } = require('express')
-const SuccessResponse = require('../utils/SuccessResponse')
+const {SuccessResponse} = require('../utils/SuccessResponse')
 const commentService = require('../services/comments.service')
+const { ErrorResponse } = require('../utils/ErrorResponse')
+
 
 
 //TODO Gestion de l'Error response
@@ -17,7 +19,7 @@ const commentController = {
         if(comment)
             res.status(200).json( new SuccessResponse( comment, count ))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -30,7 +32,7 @@ const commentController = {
         if(values)
             res.status(200).json( new SuccessResponse ( values, count ))
         else 
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -49,12 +51,14 @@ const commentController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
+        
         const data = req.body 
         const isCreated = await commentService.create(data)
+
         if(isCreated)
-            res.sendStatus(200)
+            res.status(200).json(new SuccessResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(401)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
     /**
@@ -73,13 +77,14 @@ const commentController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
+
         const id = req.params.ID_Comment
         const isDeleted = await commentService.delete(id)
-        if (isDeleted) {
-            res.status(200).json("Élément est supprimé.")            
-        }
-        else    
-            res.status(400).json("Élément non trouvé")
+        
+        if(isDeleted)
+            res.status(200).json(new SuccesResponseMsg("The element has been deleted.", 200))
+        else
+            res.status(404).json(new ErrorResponse("The element was not found.", 404))
     }
 }
 module.exports = commentController

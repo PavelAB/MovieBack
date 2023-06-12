@@ -1,11 +1,11 @@
 const { Request, Response } = require('express')
 const awardMovieService = require('../services/awards_movies.service')
-const SuccessResponse = require('../utils/SuccessResponse')
+const { SuccessResponse, SuccessResponseMsg } = require('../utils/SuccessResponse')
+const {ErrorResponse} = require('./../utils/ErrorResponse')
 
 
-
-//TODO Gestion de l'Error response
 //TODO Verifier le statusCode
+
 const awardMovieController = {
     /**
      * GetAll
@@ -13,20 +13,28 @@ const awardMovieController = {
      * @param { Response } res
      */
     getAll: async ( req, res ) => {
+        
         const { award_Movie, count } = await awardMovieService.getAll()
-
-        res.status(200).json(new SuccessResponse( award_Movie, count ))
+        
+        if(award_Movie)
+            res.status(200).json(new SuccessResponse( award_Movie, count ))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
      /**
-     * GetAll
+     * GetById
      * @param { Request } req
      * @param { Response } res
      */
-    getByID: async ( req,res ) => {
+    getByID: async ( req, res ) => {
+        
         const { values, count } = await awardMovieService.getByParams(req.params)
-        res.status(200).json(new SuccessResponse( values, count ))
-
+        
+        if(values)
+            res.status(200).json(new SuccessResponse( values, count ))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -34,11 +42,14 @@ const awardMovieController = {
      * @param { Request } req
      * @param { Response } res
      */
-    getByParams: async ( req,res ) => {
-
+    getByParams: async ( req, res ) => {
+        
         const { values, count } = await awardMovieService.getByParams( req.query )
-        res.status(200).json(new SuccessResponse( values, count ))
-
+        
+        if(values)
+            res.status(200).json(new SuccessResponse( values, count ))
+        else
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
     /**
      * Create
@@ -46,12 +57,15 @@ const awardMovieController = {
      * @param { Response } res
      */
     create: async ( req, res ) => {
+        
         const data = req.body
+        
         const isCreated = await awardMovieService.create(data)
+        
         if(isCreated)
-            res.sendStatus(200)
+            res.status(200).json(new SuccessResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
     /**
@@ -69,11 +83,16 @@ const awardMovieController = {
      * @param { Request } req
      * @param { Response } res
      */
-    delete: async ( req,res ) => {
-        const id = req.params.id
+    delete: async ( req, res ) => {
+
+        const id = req.params.ID_Award_Movie
+
         const isDeleted = await awardMovieService.delete(id)
-        //TODO Ajouter un if pour verifier si le nombre a supprime existe bien
-        res.sendStatus(200)
+        
+        if(isDeleted)
+            res.status(200).json("The element has been deleted.")
+        else
+            res.status(404).json(new ErrorResponse("The element was not found.", 404))
     }
 }
 module.exports = awardMovieController

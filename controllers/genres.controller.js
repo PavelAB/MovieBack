@@ -1,6 +1,8 @@
 const { Request, Response } = require('express')
-const SuccessResponse = require('../utils/SuccessResponse')
+const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const genreService = require('../services/genres.service')
+const { ErrorResponse } = require('../utils/ErrorResponse')
+
 
 
 //TODO Gestion de l'Error response
@@ -17,7 +19,7 @@ const genreController = {
         if(values)
             res.status(200).json( new SuccessResponse( values, count ))
         else
-            res.sendStatus(400)
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -47,10 +49,11 @@ const genreController = {
     create: async ( req, res ) => {
         const data = req.body 
         const isCreated = await genreService.create(data)
+        
         if(isCreated)
-            res.sendStatus(200)
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
-            res.sendStatus(401)
+            res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
 
     /**
