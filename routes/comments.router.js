@@ -1,17 +1,19 @@
+const createCommentsValidator = require('../Validators/comments.validator')
 const commentController = require('../controllers/comments.controller')
 const authRoles = require('./../middlewares/authRoles')
+const bodyValidator = require('./../middlewares/bodyValidator')
 
 
 const  commentRouter = require('express').Router()
 
 commentRouter.route('/')
-    .get(authRoles('User'), commentController.getAll)
-    .post(authRoles('User'),commentController.create)
+    .get(authRoles('Admin'), commentController.getAll)
+    .post(authRoles('User'),bodyValidator(createCommentsValidator),commentController.create)
 commentRouter.route('/params')
-    .get(authRoles('User'),commentController.getByParams)
+    .get(authRoles('Admin'),commentController.getByParams)
 commentRouter.route('/:ID_Comment')
-    .get(authRoles('User'),commentController.getByID)
+    .get(authRoles('Admin'),commentController.getByID)
     .put()
-    .delete(commentController.delete)
+    .delete(authRoles('Admin'),commentController.delete)
 
 module.exports = commentRouter

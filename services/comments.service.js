@@ -9,7 +9,11 @@ const commentService = {
         const { rows, count } = await db.Comments.findAndCountAll({
             include: [
                 { model: db.Movies, as: 'Movie' },
-                { model: db.Users, as: 'Comment' },
+                { 
+                    model: db.Users,
+                    as: 'Comment',
+                    through: db.MM_Users_Comments
+                },
             ],
             distinct: true
         })
@@ -23,7 +27,14 @@ const commentService = {
         const Variable_Test = [data]
 
         const { rows, count } = await db.Comments.findAndCountAll({
-            include: [db.Movies, db.Users],
+            include: [
+                { model: db.Movies, as: 'Movie' },
+                { 
+                    model: db.Users,
+                    as: 'Comment',
+                    through: db.MM_Users_Comments
+                },
+            ],
             distinct: true,
             where: {
                 [Op.and]: Variable_Test
@@ -36,7 +47,7 @@ const commentService = {
         }
     },
     update: async () => {
-        //TODO Ajouter l'update
+        //TODO To begin, I assume that we cannot modify a comment.
     },
     create: async (data) => {
         console.log("data",data);

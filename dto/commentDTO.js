@@ -1,10 +1,9 @@
-class commentDTO{
-    constructor({ ID_Comment, body, like_comment, dislike_comment, Movie, User}){
+class commentDTO {
+    constructor({ ID_Comment, body, Movie, Comment }) {
         this.ID_Comment = ID_Comment,
         this.body = body,
-        this.like_comment = like_comment,
-        this.dislike_comment = dislike_comment
-        if(Movie){
+        this.User = Comment[0].login
+        if (Movie) {
             this.Movie = {
                 ID_Movie: Movie.ID_Movie,
                 title: Movie.title,
@@ -12,13 +11,14 @@ class commentDTO{
         }
         else
             this.Movie = null
-        if (User) {
-            this.User = {
-                login: User.login
-            }
-        }
-        else
-            this.User = null
+        // if (Comment && Comment.length > 0) {
+        //     this.User = {
+        //         login: Comment[0].login // ici vous pourriez avoir plusieurs utilisateurs, je prends le premier pour cet exemple
+        //     }
+        // }
+        // else
+        //     this.User = null
+
     }
 }
 module.exports = commentDTO

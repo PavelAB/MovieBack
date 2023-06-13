@@ -6,84 +6,114 @@ const awardPersonneDTO = require("../dto/awardPersonneDTO");
 
 const awardPersonneService = {
 
-    getAll : async () => {
+    getAll: async () => {
         const { rows, count } = await db.Awards_Personnes.findAndCountAll({
-            include: [ db.Personnes ],
+            include: [
+                { model: db.Personnes, as: 'Personne' },
+            ],
             distinct: true
         })
-        const award_Personne = rows.map( award => new awardPersonneDTO(award))
+        const award_Personne = rows.map(award => new awardPersonneDTO(award))
         return {
-            award_Personne, count 
+            award_Personne, count
         }
     },
-    //TODO Verify the service with Insomnia to ensure everything is functioning correctly.
+
     getByParams: async (data) => {
-
-        let Variable_Test = []
-
-        if(data.type_award){
-            data.type_award = data.type_award.replace("_"," ") 
+        if (data.year_award)
+            data.year_award = data.year_award.split(',')
+        if (data.type_award) {
+            data.type_award = data.type_award.split(',')
+            if (Array.isArray(data.type_award)) {
+                data.type_award.map((item) => {
+                    item.replace("_", " ")
+                })
+            }
+            else
+                data.type_award = data.type_award.replace("_", " ")
+        }
+        if (data.name_award) {
+            data.type_award = data.type_award.split(',')
+            if (Array.isArray(data.name_award)) {
+                data.name_award.map((item) => {
+                    item.replace("_", " ")
+                })
+            }
+            else
+                data.name_award = data.name_award.replace("_", " ")
         }
 
-        Variable_Test = [data]
-        
-        
+        const Variable_Test = [data]
+
+
         console.log('Variable_Test ', Variable_Test);
 
-        const { rows, count} = await db.Awards_Personnes.findAndCountAll({
-            include: [ db.Personnes ],
+        const { rows, count } = await db.Awards_Personnes.findAndCountAll({
+            include: [
+                { model: db.Personnes, as: 'Personne' },
+            ],
             distinct: true,
             where: {
-                [ Op.and ]: Variable_Test
+                [Op.and]: Variable_Test
             }
         })
 
         const values = rows.map(award => new awardPersonneDTO(award))
-        return { 
+        return {
             values, count
-        } 
+        }
     },
 
-    update : async () => {
-        //TODO update
+    update: async ( id, data ) => {
+        const updateAwardPersone = await db.Awards_Personnes.update(data, {
+            where: {
+                ID_Award_Personne: id
+            }
+        })
+
+        if (updateAwardPersone[0] === 1)
+            return true
+        else
+            return false
+
     },
 
-    create : async (data) => {
+    create: async (data) => {
         console.log(data);
         const transaction = await db.sequelize.transaction()
         let isCreate
+        
         try {
 
             isCreate = await db.Awards_Personnes.create(data)
-            const personne = await db.Personnes.findByPk(data.ID_Personne, {transaction})
-            if(personne)
-                await personne.addAwards_Personnes( data.award_personne, {transaction})
+            const personne = await db.Personnes.findByPk(data.ID_Personne, { transaction })
+            if (personne)
+                await personne.addAwards_Personnes(data.award_personne, { transaction })
 
             await transaction.commit()
-            
+
         } catch (error) {
             console.log(error);
             await transaction.rollback()
             return false
         }
-        if(isCreate)
+        if (isCreate)
             return true
     },
 
-    delete : async (id) => {
-        
-        
+    delete: async (id) => {
+
         const isDeleted = await db.Awards_Personnes.findByPk(id)
 
         await db.Awards_Personnes.destroy({
-            where:{
-                ID_Award_Personne : id
+            where: {
+                ID_Award_Personne: id
             }
         })
-        if(isDeleted)
+        if (isDeleted)
             return true
         else
             return false
-    }  
+    }
 }
 module.exports = awardPersonneService 

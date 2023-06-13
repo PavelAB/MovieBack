@@ -6,7 +6,7 @@ const {userDTO} = require('../dto/userDTO')
 const userService = {
     getAll : async () => {
         const { rows, count } = await db.Users.findAndCountAll({
-            include: [ db.Ratings, db.Comments ],
+            include: [ db.Ratings ],
             distinct: true
         })
         const users = rows.map(user => new userDTO(user))

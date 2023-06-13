@@ -28,8 +28,12 @@ const awardPersonneController = {
      */
     getByID: async ( req, res ) => {
         const { values, count } = await awardPersonneService.getByParams(req.params)
+
         if(values)
-            res.status(200).json( new SuccessResponse ( values, count ))
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The element was not found.', 200))
         else 
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
@@ -44,7 +48,10 @@ const awardPersonneController = {
         const { values, count } = await awardPersonneService.getByParams( req.query )
         
         if(values)
-            res.status(200).json( new SuccessResponse ( values, count ))
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
         else 
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
 
@@ -63,7 +70,7 @@ const awardPersonneController = {
         const isCreated = await awardPersonneService.create(data)
 
         if(isCreated)
-            res.status(200).json(new SuccessResponseMsg('The element has been created.', 200))
+            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
         else
             res.status(400).json(new ErrorResponse('Error during creation.', 400))
     },
@@ -74,8 +81,18 @@ const awardPersonneController = {
      * @param { Response } res
      */
     update: async ( req, res ) => {
-        res.sendStatus(501)
-        //TODO faire l'update 
+    
+        const id = req.params.ID_Award_Personne
+        const body = req.body
+
+        const updatePersonneAward = await awardPersonneService.update( id, body )
+
+        if(updatePersonneAward)
+            res.status(200).json(new SuccesResponseMsg('The update is successful.', 200))
+        else
+            res.status(400).json(new ErrorResponse('An error occurred during the update.', 400))      
+
+
     },
 
     /**

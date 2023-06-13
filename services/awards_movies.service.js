@@ -1,5 +1,6 @@
 const awardMovieDTO = require("../dto/awardMovieDTO")
 const db = require("../models")
+const { Op } = require("sequelize");
 const Movies = require("../models")
 
 
@@ -8,7 +9,9 @@ const awardMovieService = {
 
     getAll : async () => {
         const { rows, count } = await db.Awards_Movies.findAndCountAll({
-            include: [ db.Movies ],
+            include: [ 
+                { model: db.Movies, as: 'Movie' },
+            ],
             distinct: true
         })
         const award_Movie = rows.map( award => new awardMovieDTO(award))
@@ -18,11 +21,27 @@ const awardMovieService = {
     },
 
     getByParams: async (data) => {
+        if(data.year_award)
+            data.year_award = data.year_award.split(',')
         if(data.type_award){
-            data.type_award = data.type_award.replace("_", " ") 
+            data.type_award = data.type_award.split(',')
+            if(Array.isArray(data.type_award)){
+                data.type_award.map((item) => {
+                    item.replace("_", " ")
+                })
+    	    }
+            else
+                data.type_award = data.type_award.replace("_", " ")
         }
         if(data.name_award){
-            data.name_award = data.name_award.replace("_", " ") 
+            data.type_award = data.type_award.split(',')
+            if(Array.isArray(data.name_award)){
+                data.name_award.map((item) => {
+                    item.replace("_", " ")
+                })
+    	    }
+            else
+                data.name_award = data.name_award.replace("_", " ")
         }
 
         const Variable_Test = [data]
@@ -31,7 +50,9 @@ const awardMovieService = {
         console.log('Variable_Test ', Variable_Test);
 
         const { rows, count} = await db.Awards_Movies.findAndCountAll({
-            include: [ db.Movies ],
+            include: [ 
+                { model: db.Movies, as: 'Movie' },
+            ],
             distinct: true,
             where: {
                 [ Op.and ]: Variable_Test
@@ -44,8 +65,19 @@ const awardMovieService = {
         } 
     },
 
-    update : async () => {
-        //TODO update
+    update : async ( id, data ) => {
+
+        const updateAwardMovie = await db.Awards_Movies.update(data, {
+            where : {
+                ID_Award_Movie : id
+            }
+        })
+
+        if( updateAwardMovie[0]=== 1 )
+            return true
+        else
+            return false
+
     },
 
     create : async (data) => {

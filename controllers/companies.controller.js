@@ -4,9 +4,8 @@ const companyService = require('../services/companies.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
 
-
-//TODO Gestion de l'Error response
 //TODO Verifier le statusCode
+
 const companyController = {
     /**
      * GetAll
@@ -28,18 +27,26 @@ const companyController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        res.sendStatus(501)
+        const { values, count } = await companyService.getByParams(req.params)
+    
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The element was not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
-    /**
-     * GetByParams
-     * @param { Request } req
-     * @param { Response } res
-     */
-    getByParams: async ( req, res ) => {
-        res.sendStatus(501)
+    // /**
+    //  * GetByParams
+    //  * @param { Request } req
+    //  * @param { Response } res
+    //  */
+    // getByParams: async ( req, res ) => {
+    //     res.sendStatus(501)
         
-    },
+    // },
 
     /**
      * create
@@ -62,8 +69,37 @@ const companyController = {
      * @param { Response } res
      */
     update: async ( req, res ) => {
-        res.sendStatus(501)
-        //TODO faire l'update 
+
+        const id = req.params.ID_Company
+        const body = req.body
+
+        const updateCompany = await companyService.update( id, body )
+
+        if(updateCompany)
+            res.status(200).json(new SuccesResponseMsg('The update is successful.', 200))
+        else
+            res.status(400).json(new ErrorResponse('An error occurred during the update.', 400))      
+
+    },
+
+    /**
+     * removeMovie
+     * @param { Request } req
+     * @param { Response } res
+     */
+    removeMovie: async ( req, res ) => {
+
+        const id = req.params.ID_Company
+        const body = req.body.movie
+
+        const removeMovie = await companyService.removeMovieInCompany( id, body )
+        if(removeMovie)
+            if(removeMovie === 'NotInRange')
+                res.status(200).json(new SuccesResponseMsg('The element to be removed is not found in the array.', 200))
+            else
+                res.status(200).json(new SuccesResponseMsg('The update is successful.', 200))
+        else
+            res.status(400).json(new ErrorResponse('An error occurred during the update.', 400))
     },
 
     /**
@@ -72,7 +108,14 @@ const companyController = {
      * @param { Response } res
      */
     delete: async ( req, res ) => {
-        res.sendStatus(501)
+ 
+        const id = req.params.ID_Company
+        const isDeleted = await companyService.delete(id)
+        
+        if(isDeleted)
+            res.status(200).json(new SuccesResponseMsg("The element has been deleted.", 200))
+        else
+            res.status(404).json(new ErrorResponse("The element was not found.", 404))
     }
 }
 module.exports = companyController
