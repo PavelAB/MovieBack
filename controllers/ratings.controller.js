@@ -4,9 +4,6 @@ const ratingService = require('../services/ratings.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
 
-
-
-//TODO Gestion de l'Error response
 //TODO Verifier le statusCode
 const ratingController = {
     /**
@@ -21,7 +18,6 @@ const ratingController = {
             res.status(200).json( new SuccessResponse( values, count ))
         else
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
-
     },
 
     /**
@@ -30,7 +26,16 @@ const ratingController = {
      * @param { Response } res
      */
     getByID: async ( req, res ) => {
-        res.sendStatus(501)
+        
+        const { values, count } = await ratingService.getByParams(req.params)
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The element was not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The element was not found.', 400))
     },
 
     /**
@@ -39,8 +44,16 @@ const ratingController = {
      * @param { Response } res
      */
     getByParams: async ( req, res ) => {
-        res.sendStatus(501)
         
+        const { values, count } = await ratingService.getByParams( req.query )
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
@@ -65,8 +78,18 @@ const ratingController = {
      * @param { Response } res
      */
     update: async ( req, res ) => {
-        res.sendStatus(501)
-        //TODO faire l'update 
+
+        const id = req.params.ID_Rating
+        const body = req.body
+
+        console.log(id);
+
+        const updateRating = await ratingService.update( id, body )
+
+        if(updateRating)
+            res.status(200).json(new SuccesResponseMsg('The update is successful.', 200))
+        else
+            res.status(400).json(new ErrorResponse('An error occurred during the update.', 400))      
     },
 
     /**

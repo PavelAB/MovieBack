@@ -1,11 +1,19 @@
 const yup = require('yup')
 
 const createRatingsValidator = yup.object({
-    rate_picture: yup.number().positive().required(),
-    rate_actor_gane: yup.number().positive().required(),
-    rate_cinamatography: yup.number().positive().required(),
-    rate_sound: yup.number().positive().required(),
-    rate_writing: yup.number().positive().required()
-    //TODO association avec des table movies et users
+    rate_picture: yup.number().min(0).max(10),
+    rate_actor_game: yup.number().required().min(0).max(10),
+    rate_cinematography: yup.number().required().min(0).max(10),
+    rate_sound: yup.number().required().min(0).max(10),
+    rate_writing: yup.number().required().min(0).max(10),
+    ID_Movie: yup.number().required(),
+    ID_User: yup.number().required()
 })
-module.exports = createRatingsValidator
+const updateRatingsValidator = yup.object({
+    rate_picture: yup.number().min(0).max(10),
+    rate_actor_game: yup.number().min(0).max(10),
+    rate_cinematography: yup.number().min(0).max(10),
+    rate_sound: yup.number().min(0).max(10),
+    rate_writing: yup.number().min(0).max(10)
+})
+module.exports = { createRatingsValidator, updateRatingsValidator}
