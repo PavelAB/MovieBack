@@ -6,7 +6,7 @@ const { Sequelize, DataTypes, INTEGER } = require ('sequelize');
  */
 
 
-//TODO Validation sur chaque colonne
+
 
 module.exports = ( sequelize ) => {
     const Tags = sequelize.define('Tags', {
@@ -17,7 +17,11 @@ module.exports = ( sequelize ) => {
         },
         name_tag: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+
         }
 
     },{ 

@@ -110,7 +110,6 @@ const companyController = {
     delete: async ( req, res ) => {
  
         const id = req.params.ID_Company
-
         const isDeleted = await companyService.delete(id)
         
         if(isDeleted)
