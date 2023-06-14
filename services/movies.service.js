@@ -440,8 +440,49 @@ const movieService = {
 
     },
 
-    update: async () => {
-        //TODO faire l'update
+    update:async( id, data ) => {
+        
+        console.log("data", data);
+
+        const transaction = await db.sequelize.transaction()
+        
+        let updateMovie
+        
+        try {
+
+            updateMovie = await db.Movies.update(data,{
+                include: [db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+                    { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                    { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                    { model: db.Personnes, as: "Director", throught: 'Movies' }],
+                where: {
+                    ID_Movie : id
+                }
+            }, {transaction})
+
+            const isMovieToUpdate = await db.Movies.findByPk(id, {
+                include: [db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+                    { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                    { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                    { model: db.Personnes, as: "Director", throught: 'Movies' }],
+            }, {transaction})
+
+            await isMovieToUpdate.addTag( data.tags, {transaction} )
+            await isMovieToUpdate.addGenre( data.genre, {transaction} )
+            await isMovieToUpdate.addCompany( data.company, {transaction} )
+            await isMovieToUpdate.addAwards_Movies( data.award_movie, {transaction})
+            
+            await isMovieToUpdate.addActors( data.actor, {transaction} )
+            await isMovieToUpdate.addWriters( data.writer, {transaction} )
+
+            await transaction.commit()
+            
+        } catch (error) {
+            await transaction.rollback()
+            return false
+        }
+        
+        return true
     },
 
     updateAvatar: async (id, filename) => {
@@ -456,8 +497,149 @@ const movieService = {
         return updatedRow[0] === 1
     },
 
-    delete: async () => {
-        //TODO Ajouter la varification si l'element a ete supprimer renvoyer true or false
+    removeTagsInMovie : async ( id, data ) => {
+
+        let affectedRows
+        const transaction = await db.sequelize.transaction()
+
+        try {
+            
+            const updateMovie = await db.Movies.findByPk( id, {
+                include: [db.Tags]
+            }, {transaction})
+
+            affectedRows = await updateMovie.removeTags( data, {transaction} )
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        if(affectedRows === 0)
+            return "NotInRange"
+        else
+            return true
+    },
+
+    removeCompaniesInMovie : async ( id, data ) => {
+
+        let affectedRows
+        const transaction = await db.sequelize.transaction()
+
+        try {
+            
+            const updateMovie = await db.Movies.findByPk( id, {
+                include: [db.Companies]
+            }, {transaction})
+
+            affectedRows = await updateMovie.removeCompany( data, {transaction} )
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        if(affectedRows === 0)
+            return "NotInRange"
+        else
+            return true
+    },
+
+    removeGenresInMovie : async ( id, data ) => {
+
+        let affectedRows
+        const transaction = await db.sequelize.transaction()
+
+        try {
+            
+            const updateMovie = await db.Movies.findByPk( id, {
+                include: [db.Genres]
+            }, {transaction})
+
+            affectedRows = await updateMovie.removeGenre( data, {transaction} )
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        if(affectedRows === 0)
+            return "NotInRange"
+        else
+            return true
+    },
+
+    removeActorsInMovie : async ( id, data ) => {
+
+        let affectedRows
+        const transaction = await db.sequelize.transaction()
+
+        try {
+            
+            const updateMovie = await db.Movies.findByPk( id, {
+                include: [
+                    { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                ]
+            }, {transaction})
+
+            affectedRows = await updateMovie.removeActors( data, {transaction} )
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        if(affectedRows === 0)
+            return "NotInRange"
+        else
+            return true
+    },
+
+    removeWritersInMovie : async ( id, data ) => {
+
+        let affectedRows
+        const transaction = await db.sequelize.transaction()
+
+        try {
+            
+            const updateMovie = await db.Movies.findByPk( id, {
+                include: [
+                    { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                ]
+            }, {transaction})
+
+            affectedRows = await updateMovie.removeWriters( data, {transaction} )
+            await transaction.commit()
+
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        if(affectedRows === 0)
+            return "NotInRange"
+        else
+            return true
+    },
+
+    delete : async (id) => {
+
+        const isDeleted = await db.Movies.findByPk(id)
+
+        await db.Movies.destroy({
+            where:{
+                ID_Movie : id
+            }
+        })
+
+        if (isDeleted)
+            return true
+        else
+            return false
     },
 }
 module.exports = movieService 
