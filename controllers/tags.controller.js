@@ -40,15 +40,26 @@ const tagController = {
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
-    // /**
-    //  * GetByParams
-    //  * @param { Request } req
-    //  * @param { Response } res
-    //  */
-    // getByParams: async ( req, res ) => {
-    //     res.sendStatus(501)
+    /**
+     * GetByParams
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByParams: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await tagService.getByParams( req.query )
         
-    // },
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
+        
+    },
 
     /**
      * create

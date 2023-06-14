@@ -3,7 +3,7 @@ class tagDTO{
         this.ID_Tag = ID_Tag,
         this.name_tag = name_tag
         this.Movies = Movies ? Movies.map((item) => (new TagsMovieDTO(item))) : []
-
+        //this.Movies = Movies
     }
     
 }

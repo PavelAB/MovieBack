@@ -46,8 +46,123 @@ const movieController = {
      * @param { Response } res
      */
     getByParams: async ( req, res ) => {
-        res.sendStatus(501)
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByParamsTestTSG( req.query )
         
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
+        
+    },
+
+    /**
+     * GetByPersonnes
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByPersonnes: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByWriter( req.query )
+
+        const { values2, count2 } = await movieService.getByActor( req.query )
+        
+        //FIXME Sort based on the 'id_Movie' to avoid displaying the same movie twice.
+        let fusion = [...values, ...values2]            
+        
+        
+
+        if( fusion )
+            if( fusion.length > 0 )
+                res.status(200).json(new SuccessResponse( fusion, fusion.length ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
+        
+    },
+
+    /**
+     * GetByTags
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByTags: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByTags( req.query )
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+    },
+
+    /**
+     * GetByAwards
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByAwards: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByAwards( req.query )
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+    },
+    
+    /**
+     * GetByCompanies
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByCompanies: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByCompanies( req.query )
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+    },
+
+    /**
+     * GetByGenres
+     * @param { Request } req
+     * @param { Response } res
+     */
+    getByGenres: async ( req, res ) => {
+
+        console.log(req.query);
+        const { values, count } = await movieService.getByGenres( req.query )
+        
+        if(values)
+            if( values.length > 0 )
+                res.status(200).json(new SuccessResponse( values, count ))
+            else 
+                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        else 
+            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
     },
 
     /**
