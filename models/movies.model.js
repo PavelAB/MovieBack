@@ -6,7 +6,7 @@ const { Sequelize, DataTypes, INTEGER, ModelStatic } = require ('sequelize');
  * @returns { ModelStatic<any> }
  */
 
-//TODO Validation sur chaque colonne
+
 
 
 module.exports = ( sequelize ) => {
@@ -18,11 +18,17 @@ module.exports = ( sequelize ) => {
         },
         title: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         cover: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         release_date: {
             type: DataTypes.DATE,

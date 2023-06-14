@@ -5,8 +5,8 @@ const { ErrorResponse } = require('../utils/ErrorResponse')
 
 
 
-//TODO Gestion de l'Error response
 //TODO Verifier le statusCode
+
 const commentController = {
     /**
      * GetAll
@@ -45,7 +45,6 @@ const commentController = {
      */
     getByParams: async ( req, res ) => {
         res.sendStatus(501)
-        //TODO ajouter le recherche par l'id_user ou ID_Movie
     },
 
     /**
@@ -71,7 +70,6 @@ const commentController = {
     //  */
     // update: async ( req, res ) => {
     //     res.sendStatus(501)
-    //     //TODO faire l'update 
     // },
 
     /**
