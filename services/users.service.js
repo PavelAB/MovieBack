@@ -1,6 +1,7 @@
 const db = require("../models")
 const argon2 = require('argon2');
 const {userDTO} = require('../dto/userDTO')
+const { Op } = require("sequelize");
 
 
 const userService = {
@@ -15,6 +16,28 @@ const userService = {
         }
 
     },
+
+    getByParams: async (data) => {
+
+        const Variable_Test = [data]
+
+
+        console.log('Variable_Test ', Variable_Test);
+
+        const { rows, count } = await db.Users.findAndCountAll({
+            include: [ ], 
+            distinct: true,
+            where: {
+                [Op.and]: Variable_Test
+            }
+        })
+
+        const values = rows.map( user => new userDTO(user))
+        return {
+            values, count
+        }
+    },
+
     searchByLogin : async (login) => {
         console.log("I'm here");
         const thatLogin = await db.Users.findOne({
@@ -46,9 +69,35 @@ const userService = {
             return false
     },
 
-    update : async () => {
-        //TODO Faire l'update
+    update:async( id, data ) => {
+        
+        console.log("data", data);
+
+        const transaction = await db.sequelize.transaction()
+        
+        let updateUser
+        
+        try {
+
+            updateUser = await db.Users.update(data,{
+                include: [  ], 
+                where: {
+                    ID_User : id
+                }
+            }, {transaction})
+
+            await transaction.commit()
+            
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback()
+            return false
+        }
+        
+        return true
     },
+
+
     create : async (data) => {
         try {
             const hash = await argon2.hash( data.password )
@@ -64,7 +113,19 @@ const userService = {
             return false
 
     },
-    //TODO add methode addPicture
+
+    updateAvatar: async (id, filename) => {
+        const data = {
+            picture : `/images/avatars/${filename}`
+        }
+        const updatedRow = await db.Users.update(data, {
+            where: {
+                ID_User : id
+            }
+        })
+        return updatedRow[0] === 1
+    },
+
     delete : async (id) => {
        const isDeleted = await db.Users.findByPk(id)
 
