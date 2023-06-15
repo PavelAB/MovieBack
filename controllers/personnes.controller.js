@@ -138,9 +138,9 @@ const personneController = {
 
         const updated = await personneService.updateAvatar(id, filename)
         if (!updated) {
-            return res.sendStatus(400)
+            return res.status(400).json(new ErrorResponse( "Something wrong, update picture failed.", 400 ))
         }
-        res.sendStatus(204)
+        res.status(204).json(new SuccesResponseMsg("Update picture succeeded.", 204))
     },
 
     /**

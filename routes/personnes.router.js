@@ -1,17 +1,17 @@
 const personneController = require('../controllers/personnes.controller')
 const authRoles = require('./../middlewares/authRoles')
 const bodyValidator = require ('../middlewares/bodyValidator.js')
+const { createPersonnesValidator, updatePersonnesValidator, removeActorsPersonnesValidator, removeWritersPersonnesValidator } = require('../Validators/personnes.validator')
 
 const  personneRouter = require('express').Router()
 
 
 const multer = require('multer')
-const { createPersonnesValidator, updatePersonnesValidator, removeActorsPersonnesValidator, removeWritersPersonnesValidator } = require('../Validators/personnes.validator')
-console.log("test");
+
 const storage = require('../utils/config.multer')('personnesCovers')
-console.log("test2");
+
 const upload = multer({storage})
-console.log("test3");
+
 
 personneRouter.route('/')
     .get(personneController.getAll)

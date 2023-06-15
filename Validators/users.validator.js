@@ -11,4 +11,13 @@ const createUsersValidator = yup.object({
     password: yup.string().max(50).trim().required(),
     role: yup.string().max(50).trim().required()
 })
-module.exports = createUsersValidator
+
+const updateUsersValidator = yup.object({
+    first_name: yup.string().max(50).trim(),
+    last_name: yup.string().max(50).trim(),
+    birth_date: yup.date(),
+    email: yup.string().max(50).trim().matches(emailRegex),
+    password: yup.string().max(50).trim()
+
+})
+module.exports = { createUsersValidator, updateUsersValidator }
