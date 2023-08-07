@@ -45,6 +45,13 @@ jspm_packages/
 # Public
 public/
 
+# test
+test/
+test2/
+
+# webconfig
+web.config
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -77,6 +84,7 @@ web_modules/
 
 # dotenv environment variable files
 .env
+.env_prod
 .env.development.local
 .env.test.local
 .env.production.local

@@ -26,6 +26,7 @@ const authController = {
      * @param {Response} res 
      */
     login: async( req,res ) => {
+        console.log("req", req.body);
         const { login, password } = req.body
         const isLogin = await authService.login( login, password )
 
