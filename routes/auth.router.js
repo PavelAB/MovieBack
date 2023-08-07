@@ -8,6 +8,8 @@ const authRouter = require('express').Router()
 authRouter.route('/register')
     .post(bodyValidator(registerValidator),authController.register)
 authRouter.route('/login')
-    .post(bodyValidator(loginValidator),authController.login)
+    //.post(bodyValidator(loginValidator),authController.login)
+    .post(authController.login)
+
 
 module.exports = authRouter

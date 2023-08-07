@@ -8,7 +8,9 @@ const  commentRouter = require('express').Router()
 
 commentRouter.route('/')
     .get(authRoles('Admin'), commentController.getAll)
-    .post(authRoles('User'),bodyValidator(createCommentsValidator),commentController.create)
+    //.post(authRoles('User'),bodyValidator(createCommentsValidator),commentController.create)
+    .post(bodyValidator(createCommentsValidator),commentController.create)
+
 commentRouter.route('/params')
     .get(authRoles('Admin'),commentController.getByParams)
 commentRouter.route('/:ID_Comment')

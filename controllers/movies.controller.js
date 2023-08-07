@@ -96,7 +96,7 @@ const movieController = {
      */
     getByTags: async (req, res) => {
 
-        console.log(req.query);
+        //console.log(req.query);
         const { values, count } = await movieService.getByTags(req.query)
 
         if (values)
