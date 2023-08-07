@@ -6,7 +6,7 @@ I used Vite and PNPM to create this project. If you want to launch this project,
 
 ### UML Schema ( UML_diagram/UML diagrammJPG )
 
-- Before starting my backend application, I prepared my entity association schema to ease my work and created a roadmap. 
+- Before starting my backend application, I prepared my UML schema to ease my work and created a roadmap. 
 
 - Little notice, that schema is not the latest version. In the latest version, I added an additional table between Users and Commentaires to allow the possibility of liking and disliking comments.
 
