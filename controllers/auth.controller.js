@@ -11,6 +11,7 @@ const authController = {
      * @param {Request} req 
      * @param {Response} res 
      */
+    
     register: async( req,res ) => {
         const data = req.body
         const newUser = await authService.register(data)
@@ -20,6 +21,9 @@ const authController = {
         else
             res.status(400).json( new ErrorResponse('Something went wrong. Please try again.') ) 
     },
+
+
+
     /**
      * login
      * @param {Request} req 
