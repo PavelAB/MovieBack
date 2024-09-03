@@ -29,7 +29,7 @@ const movieController = {
      * @param { Response } res
      */
     getByID: async (req, res) => {
-
+        // TODO I tried to retrieve a movie with a non-existent ID, and the backend crashed. This isn't good; it needs to be fixed.
         const id = req.params.ID_Movie
         console.log(id);
         const movie = await movieService.getById(id)

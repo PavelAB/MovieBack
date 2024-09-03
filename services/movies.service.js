@@ -19,7 +19,6 @@ const movieService = {
     },
 
     getById: async (id) => {
-        console.log("coucou");
         const value = await db.Movies.findByPk(id, {
             include: [db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
             { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
@@ -27,7 +26,9 @@ const movieService = {
             { model: db.Personnes, as: "Director", throught: 'Movies' }],
             distinct: true
         })
-        console.log(value);
+        // TODO Review the return of an element that has not been found; it currently returns 'null,' which is not acceptable.
+        if(!value)
+            return null
         const movie = new movieDTO(value)
         return movie
     },
