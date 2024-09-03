@@ -27,6 +27,7 @@ const movieService = {
             distinct: true
         })
         // TODO Review the return of an element that has not been found; it currently returns 'null,' which is not acceptable.
+        console.log("values", value)
         if(!value)
             return null
         const movie = new movieDTO(value)
