@@ -30,9 +30,16 @@ const authController = {
      * @param {Response} res 
      */
     login: async( req,res ) => {
-        console.log("req", req.body);
         const { login, password } = req.body
+
+        if(!login || !password){
+            res.status(401).json(new ErrorResponse("The login or password is not provided.", 401))
+            return
+        }
+
         const isLogin = await authService.login( login, password )
+
+        console.log("Result ::>", isLogin)
 
         if(!isLogin){
             res.status(401).json(new ErrorResponse("The login or password is incorrect.", 401))
@@ -40,7 +47,11 @@ const authController = {
         }
         const token = await jwt.generate(isLogin)
 
+        console.log("Result ::>", token)
+
         const newUser = new UserDTOToken( isLogin, token )
+
+        console.log("newUser ::>", newUser)
         //FIXME NOT_IMPORTANT Perhaps change the way the 'SuccessResponse' is returned.
         if(token)
             res.status(200).json(newUser)
