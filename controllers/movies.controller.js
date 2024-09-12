@@ -1,5 +1,5 @@
 const { Request, Response } = require('express')
-const { SuccessResponse, SuccesResponseMsg } = require('../utils/SuccessResponse')
+const { SuccessResponse, SuccesResponseMsg, NewSuccessResponse } = require('../utils/SuccessResponse')
 const movieService = require('../services/movies.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
@@ -12,13 +12,38 @@ const movieController = {
      * GetAll
      * @param { Request } req
      * @param { Response } res
+     * 
+     * @response {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     *   - `data` {Array<Object>} : List of paginated movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
      */
+
     getAll: async (req, res) => {
-        const { values, count } = await movieService.getAll()
-        if (values)
-            res.status(200).json(new SuccessResponse(values, count))
-        else
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
+        const { page = 1, limit = 10 } = req.query
+
+        try {
+            const result = await movieService.getAll(Number(page), Number(limit))
+
+            if (result.values){
+                res.status(200).json(new NewSuccessResponse({
+                    data: result.values,
+                    totalCount: result.totalCount,
+                    currentPage: result.currentPage,
+                    totalPages: result.totalPages
+                }))
+
+            }
+            else
+                res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500))
+        }
+
+
 
     },
 
@@ -279,12 +304,12 @@ const movieController = {
     * @param { Request } req
     * @param { Response } res
     */
-    removeWriters: async ( req, res ) => {
+    removeWriters: async (req, res) => {
 
         const id = req.params.ID_Movie
         const body = req.body.writers
 
-        const removeWriters = await movieService.removeWritersInMovie( id, body )
+        const removeWriters = await movieService.removeWritersInMovie(id, body)
         if (removeWriters)
             if (removeWriters === 'NotInRange')
                 res.status(200).json(new SuccesResponseMsg('The element to be removed is not found in the array.', 200))
@@ -318,7 +343,7 @@ const movieController = {
      * delete
      * @param { Request } req
      * @param { Response } res
-     */    
+     */
     delete: async (req, res) => {
 
         const id = req.params.ID_Movie

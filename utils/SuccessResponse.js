@@ -12,4 +12,13 @@ class SuccesResponseMsg{
     }
 }
 
-module.exports = {SuccessResponse, SuccesResponseMsg}
+class NewSuccessResponse{
+    constructor({data, totalCount, totalPages, currentPage}){
+        this.data = data
+        this.totalCount = totalCount
+        this.totalPages = totalPages
+        this.currentPage = currentPage
+    }
+}
+
+module.exports = {SuccessResponse, SuccesResponseMsg, NewSuccessResponse}

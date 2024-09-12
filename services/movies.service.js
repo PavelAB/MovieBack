@@ -1,21 +1,32 @@
-const movieDTO = require("../dto/movieDTO")
+const {movieDTO, moviesData} = require("../dto/movieDTO")
 const db = require("../models")
 const { Op, Model } = require("sequelize");
 
 
 const movieService = {
-    getAll: async () => {
+    getAll: async (page = 1, limit = 10) => {
+
+        const offset = (page - 1) * 10
+
         const { rows, count } = await db.Movies.findAndCountAll({
             include: [db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
             { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
             { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
             { model: db.Personnes, as: "Director", throught: 'Movies' }],
-            distinct: true
+            distinct: true,
+            limit,
+            offset
         })
-        const values = rows.map(company => new movieDTO(company))
-        return {
-            values, count
-        }
+
+        const result = new moviesData({
+            values: rows.map(movie => new movieDTO(movie)),
+            totalCount: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        }) 
+
+
+        return result
     },
 
     getById: async (id) => {
