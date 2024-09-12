@@ -1,4 +1,4 @@
-const {movieDTO, moviesData} = require("../dto/movieDTO")
+const {movieDTO, MoviesData} = require("../dto/movieDTO")
 const db = require("../models")
 const { Op, Model } = require("sequelize");
 
@@ -18,7 +18,7 @@ const movieService = {
             offset
         })
 
-        const result = new moviesData({
+        const result = new MoviesData({
             values: rows.map(movie => new movieDTO(movie)),
             totalCount: count,
             totalPages: Math.ceil(count / limit),

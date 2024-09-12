@@ -29,7 +29,7 @@ class movieDTO{
     }
 }
 
-class moviesData {
+class MoviesData {
     constructor({values, totalCount, totalPages, currentPage}){
         this.values = values
         this.totalCount = totalCount
@@ -39,4 +39,4 @@ class moviesData {
 }
 
 
-module.exports = {movieDTO, moviesData}
+module.exports = {movieDTO, MoviesData}
