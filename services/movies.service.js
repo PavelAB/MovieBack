@@ -6,7 +6,7 @@ const { Op, Model } = require("sequelize");
 const movieService = {
     getAll: async (page = 1, limit = 10) => {
 
-        const offset = (page - 1) * 10
+        const offset = (page - 1) * limit
 
         const { rows, count } = await db.Movies.findAndCountAll({
             include: [db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
