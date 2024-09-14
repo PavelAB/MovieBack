@@ -1,6 +1,6 @@
-const {movieDTO, MoviesData} = require("../dto/movieDTO")
+const { movieDTO, MoviesData } = require("../dto/movieDTO")
 const db = require("../models")
-const { Op, Model } = require("sequelize");
+const { Op, Model, where } = require("sequelize");
 
 
 const movieService = {
@@ -23,10 +23,42 @@ const movieService = {
             totalCount: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page
-        }) 
+        })
 
 
         return result
+    },
+
+    getByTitle: async (page = 1, limit = 10, searchString = "") => {
+
+        const offset = (page - 1) * limit
+        try {
+            const { rows, count } = await db.Movies.findAndCountAll({
+                where: {
+                    title: {
+                        [Op.like]: `%${searchString}%`
+                    }
+                },
+                include: [db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+                { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Director", throught: 'Movies' }],
+                distinct: true,
+                limit,
+                offset
+            })
+            const result = new MoviesData({
+                values: rows.map(movie => new movieDTO(movie)),
+                totalCount: count,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page
+            })
+
+            return result
+
+        } catch (error) {
+            throw new Error(`Error : ${error.message}`);
+        }
     },
 
     getById: async (id) => {
@@ -39,7 +71,7 @@ const movieService = {
         })
         // TODO Review the return of an element that has not been found; it currently returns 'null,' which is not acceptable.
         console.log("values", value)
-        if(!value)
+        if (!value)
             return null
         const movie = new movieDTO(value)
         return movie
@@ -131,7 +163,7 @@ const movieService = {
             if (key in db.Tags.rawAttributes) {
                 whereConditionsTags = { ...whereConditionsTags, ...condition }
             } else if (key in db.Companies.rawAttributes) {
-                whereConditionsCompanies = { ...whereConditionsCompanies, ...condition}
+                whereConditionsCompanies = { ...whereConditionsCompanies, ...condition }
                 console.log(whereConditionsCompanies);
             } else if (key in db.Genres.rawAttributes) {
                 whereConditionsGenres = { ...whereConditionsGenres, ...condition }
@@ -145,8 +177,8 @@ const movieService = {
             return { values: [], count: 0 }
         }
         console.log("afterIf");
-        if(Object.keys(whereConditionsTags).length > 0){
-                const { rows, count} = await db.Movies.findAndCountAll({
+        if (Object.keys(whereConditionsTags).length > 0) {
+            const { rows, count } = await db.Movies.findAndCountAll({
                 include: [
                     {
                         model: db.Tags,
@@ -159,7 +191,7 @@ const movieService = {
             return {
                 values, count
             }
-        } else if(Object.keys(whereConditionsGenres).length > 0){
+        } else if (Object.keys(whereConditionsGenres).length > 0) {
             const { rows, count } = await db.Movies.findAndCountAll({
                 include: [
                     {
@@ -174,7 +206,7 @@ const movieService = {
                 values, count
             }
 
-        } else if(Object.keys(whereConditionsCompanies).length > 0){
+        } else if (Object.keys(whereConditionsCompanies).length > 0) {
             const { rows, count } = await db.Movies.findAndCountAll({
                 include: [
                     {
@@ -208,19 +240,19 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsWriters).length === 0 ) {
+        if (Object.keys(whereConditionsWriters).length === 0) {
             return { values: [], count: 0 }
         }
 
         const { rows, count } = await db.Movies.findAndCountAll({
             include: [
                 {
-                    
+
                     model: db.Personnes,
                     as: 'Writers',
                     where: whereConditionsWriters,
                     through: { attributes: [] },
-                        
+
                 }
             ]
         });
@@ -249,19 +281,19 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsActors).length === 0 ) {
+        if (Object.keys(whereConditionsActors).length === 0) {
             return { values: [], count: 0 }
         }
 
         const { rows, count } = await db.Movies.findAndCountAll({
             include: [
                 {
-                    
+
                     model: db.Personnes,
                     as: 'Actors',
                     where: whereConditionsActors,
                     through: { attributes: [] },
-                        
+
                 }
             ]
         });
@@ -291,7 +323,7 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsTags).length === 0 ) {
+        if (Object.keys(whereConditionsTags).length === 0) {
             return { values: [], count: 0 }
         }
 
@@ -329,7 +361,7 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsGenres).length === 0 ) {
+        if (Object.keys(whereConditionsGenres).length === 0) {
             return { values: [], count: 0 }
         }
 
@@ -367,7 +399,7 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsAwards).length === 0 ) {
+        if (Object.keys(whereConditionsAwards).length === 0) {
             return { values: [], count: 0 }
         }
 
@@ -404,7 +436,7 @@ const movieService = {
         }
 
 
-        if ( Object.keys(whereConditionsCompanies).length === 0 ) {
+        if (Object.keys(whereConditionsCompanies).length === 0) {
             return { values: [], count: 0 }
         }
 
@@ -453,48 +485,48 @@ const movieService = {
 
     },
 
-    update:async( id, data ) => {
-        
+    update: async (id, data) => {
+
         console.log("data", data);
 
         const transaction = await db.sequelize.transaction()
-        
+
         let updateMovie
-        
+
         try {
 
-            updateMovie = await db.Movies.update(data,{
+            updateMovie = await db.Movies.update(data, {
                 include: [db.Genres, db.Tags, db.Companies, db.Awards_Movies,
-                    { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
-                    { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
-                    { model: db.Personnes, as: "Director", throught: 'Movies' }],
+                { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Director", throught: 'Movies' }],
                 where: {
-                    ID_Movie : id
+                    ID_Movie: id
                 }
-            }, {transaction})
+            }, { transaction })
 
             const isMovieToUpdate = await db.Movies.findByPk(id, {
                 include: [db.Genres, db.Tags, db.Companies, db.Awards_Movies,
-                    { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
-                    { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
-                    { model: db.Personnes, as: "Director", throught: 'Movies' }],
-            }, {transaction})
+                { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
+                { model: db.Personnes, as: "Director", throught: 'Movies' }],
+            }, { transaction })
 
-            await isMovieToUpdate.addTag( data.tags, {transaction} )
-            await isMovieToUpdate.addGenre( data.genre, {transaction} )
-            await isMovieToUpdate.addCompany( data.company, {transaction} )
-            await isMovieToUpdate.addAwards_Movies( data.award_movie, {transaction})
-            
-            await isMovieToUpdate.addActors( data.actor, {transaction} )
-            await isMovieToUpdate.addWriters( data.writer, {transaction} )
+            await isMovieToUpdate.addTag(data.tags, { transaction })
+            await isMovieToUpdate.addGenre(data.genre, { transaction })
+            await isMovieToUpdate.addCompany(data.company, { transaction })
+            await isMovieToUpdate.addAwards_Movies(data.award_movie, { transaction })
+
+            await isMovieToUpdate.addActors(data.actor, { transaction })
+            await isMovieToUpdate.addWriters(data.writer, { transaction })
 
             await transaction.commit()
-            
+
         } catch (error) {
             await transaction.rollback()
             return false
         }
-        
+
         return true
     },
 
@@ -510,18 +542,18 @@ const movieService = {
         return updatedRow[0] === 1
     },
 
-    removeTagsInMovie : async ( id, data ) => {
+    removeTagsInMovie: async (id, data) => {
 
         let affectedRows
         const transaction = await db.sequelize.transaction()
 
         try {
-            
-            const updateMovie = await db.Movies.findByPk( id, {
+
+            const updateMovie = await db.Movies.findByPk(id, {
                 include: [db.Tags]
-            }, {transaction})
+            }, { transaction })
 
-            affectedRows = await updateMovie.removeTags( data, {transaction} )
+            affectedRows = await updateMovie.removeTags(data, { transaction })
             await transaction.commit()
 
         } catch (error) {
@@ -529,24 +561,24 @@ const movieService = {
             await transaction.rollback()
             return false
         }
-        if(affectedRows === 0)
+        if (affectedRows === 0)
             return "NotInRange"
         else
             return true
     },
 
-    removeCompaniesInMovie : async ( id, data ) => {
+    removeCompaniesInMovie: async (id, data) => {
 
         let affectedRows
         const transaction = await db.sequelize.transaction()
 
         try {
-            
-            const updateMovie = await db.Movies.findByPk( id, {
+
+            const updateMovie = await db.Movies.findByPk(id, {
                 include: [db.Companies]
-            }, {transaction})
+            }, { transaction })
 
-            affectedRows = await updateMovie.removeCompany( data, {transaction} )
+            affectedRows = await updateMovie.removeCompany(data, { transaction })
             await transaction.commit()
 
         } catch (error) {
@@ -554,24 +586,24 @@ const movieService = {
             await transaction.rollback()
             return false
         }
-        if(affectedRows === 0)
+        if (affectedRows === 0)
             return "NotInRange"
         else
             return true
     },
 
-    removeGenresInMovie : async ( id, data ) => {
+    removeGenresInMovie: async (id, data) => {
 
         let affectedRows
         const transaction = await db.sequelize.transaction()
 
         try {
-            
-            const updateMovie = await db.Movies.findByPk( id, {
+
+            const updateMovie = await db.Movies.findByPk(id, {
                 include: [db.Genres]
-            }, {transaction})
+            }, { transaction })
 
-            affectedRows = await updateMovie.removeGenre( data, {transaction} )
+            affectedRows = await updateMovie.removeGenre(data, { transaction })
             await transaction.commit()
 
         } catch (error) {
@@ -579,26 +611,26 @@ const movieService = {
             await transaction.rollback()
             return false
         }
-        if(affectedRows === 0)
+        if (affectedRows === 0)
             return "NotInRange"
         else
             return true
     },
 
-    removeActorsInMovie : async ( id, data ) => {
+    removeActorsInMovie: async (id, data) => {
 
         let affectedRows
         const transaction = await db.sequelize.transaction()
 
         try {
-            
-            const updateMovie = await db.Movies.findByPk( id, {
+
+            const updateMovie = await db.Movies.findByPk(id, {
                 include: [
                     { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
                 ]
-            }, {transaction})
+            }, { transaction })
 
-            affectedRows = await updateMovie.removeActors( data, {transaction} )
+            affectedRows = await updateMovie.removeActors(data, { transaction })
             await transaction.commit()
 
         } catch (error) {
@@ -606,26 +638,26 @@ const movieService = {
             await transaction.rollback()
             return false
         }
-        if(affectedRows === 0)
+        if (affectedRows === 0)
             return "NotInRange"
         else
             return true
     },
 
-    removeWritersInMovie : async ( id, data ) => {
+    removeWritersInMovie: async (id, data) => {
 
         let affectedRows
         const transaction = await db.sequelize.transaction()
 
         try {
-            
-            const updateMovie = await db.Movies.findByPk( id, {
+
+            const updateMovie = await db.Movies.findByPk(id, {
                 include: [
                     { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
                 ]
-            }, {transaction})
+            }, { transaction })
 
-            affectedRows = await updateMovie.removeWriters( data, {transaction} )
+            affectedRows = await updateMovie.removeWriters(data, { transaction })
             await transaction.commit()
 
         } catch (error) {
@@ -633,19 +665,19 @@ const movieService = {
             await transaction.rollback()
             return false
         }
-        if(affectedRows === 0)
+        if (affectedRows === 0)
             return "NotInRange"
         else
             return true
     },
 
-    delete : async (id) => {
+    delete: async (id) => {
 
         const isDeleted = await db.Movies.findByPk(id)
 
         await db.Movies.destroy({
-            where:{
-                ID_Movie : id
+            where: {
+                ID_Movie: id
             }
         })
 

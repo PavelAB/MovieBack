@@ -64,6 +64,43 @@ const movieController = {
     },
 
     /**
+     * GetByTitle
+     * @param { Request } req
+     * @param { Response } res
+     * 
+     * @response {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     *   - `data` {Array<Object>} : List of paginated movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     */
+
+    getByTitle: async (req, res) => {
+        const {page = 1, limit = 10} = req.query
+        const {searchString} = req.body
+        console.log("test", searchString)
+
+        try {
+            const result = await movieService.getByTitle(Number(page), Number(limit), searchString)
+            
+            if (result.values){
+                res.status(200).json(new NewSuccessResponse({
+                    data: result.values,
+                    totalCount: result.totalCount,
+                    currentPage: result.currentPage,
+                    totalPages: result.totalPages
+                }))
+
+            }
+            else
+                res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500)) 
+        }
+    },
+
+    /**
      * GetByParams
      * @param { Request } req
      * @param { Response } res
