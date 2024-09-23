@@ -39,21 +39,36 @@ const ratingController = {
     },
 
     /**
-     * GetByParams
-     * @param { Request } req
-     * @param { Response } res
+     * GetByParams - General function to handle searching with multiple or specific parameters automatically.
+     * Also manages pagination and sends an appropriate response.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`, and other search filters.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of paginated rates.
+     *   - `totalCount` {number} : Total number of rates.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
     getByParams: async ( req, res ) => {
+
+        const { limit = 10, page = 1, ...data } = req.query
         
-        const { values, count } = await ratingService.getByParams( req.query )
-        
-        if(values)
-            if( values.length > 0 )
-                res.status(200).json(new SuccessResponse( values, count ))
+        try {
+            const result = await ratingService.getByParams(data, Number(page), Number(limit))
+            
+            if( result.data.length > 0 )
+                res.status(200).json(result)
             else 
-                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
-        else
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500)) 
+        }            
     },
 
     /**
