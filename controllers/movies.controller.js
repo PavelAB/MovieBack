@@ -9,15 +9,21 @@ const { ErrorResponse } = require('../utils/ErrorResponse')
 //TODO Verifier le statusCode
 const movieController = {
     /**
-     * GetAll
-     * @param { Request } req
-     * @param { Response } res
+     * GetAll - Function to retrieve all movies from the database.
+     * Also manages pagination and sends an appropriate response.
      * 
-     * @response {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" with:
      *   - `data` {Array<Object>} : List of paginated movies.
      *   - `totalCount` {number} : Total number of movies.
      *   - `currentPage` {number} : Current page number.
      *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
 
     getAll: async (req, res) => {
@@ -27,24 +33,14 @@ const movieController = {
         try {
             const result = await movieService.getAll(Number(page), Number(limit))
 
-            if (result.values){
-                res.status(200).json(new NewSuccessResponse({
-                    data: result.values,
-                    totalCount: result.totalCount,
-                    currentPage: result.currentPage,
-                    totalPages: result.totalPages
-                }))
-
-            }
+            if (result.data)
+                res.status(200).json(result)
             else
-                res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
 
         } catch (error) {
             res.status(500).json(new ErrorResponse(error.message, 500))
         }
-
-
-
     },
 
     /**
@@ -64,15 +60,21 @@ const movieController = {
     },
 
     /**
-     * GetByTitle
-     * @param { Request } req
-     * @param { Response } res
+     * GetByTitle - Function to handle searching for movies that contain a specific substring in their title.
+     * Also manages pagination and sends an appropriate response.
      * 
-     * @response {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`, and `searchString`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" with:
      *   - `data` {Array<Object>} : List of paginated movies.
      *   - `totalCount` {number} : Total number of movies.
      *   - `currentPage` {number} : Current page number.
      *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
 
     getByTitle: async (req, res) => {
@@ -81,17 +83,10 @@ const movieController = {
         try {
             const result = await movieService.getByTitle(Number(page), Number(limit), searchString)
             
-            if (result.values){
-                res.status(200).json(new NewSuccessResponse({
-                    data: result.values,
-                    totalCount: result.totalCount,
-                    currentPage: result.currentPage,
-                    totalPages: result.totalPages
-                }))
-
-            }
+            if (result.data)
+                res.status(200).json(result)
             else
-                res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
             
         } catch (error) {
             res.status(500).json(new ErrorResponse(error.message, 500)) 

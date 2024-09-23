@@ -1,10 +1,27 @@
 const { movieDTO, MoviesData } = require("../dto/movieDTO")
 const db = require("../models")
-const { Op, Model, where } = require("sequelize");
+const { Op } = require("sequelize");
+const { NewSuccessResponse } = require("../utils/SuccessResponse");
 
 
 const movieService = {
-    getAll: async (page = 1, limit = 10) => {
+    /**
+     * getAll - Service function that handles querying the database to retrieve all movies,
+     * including pagination. Returns paginated results of movies.
+     * 
+     * @param {number} page - The current page number for pagination.
+     * @param {number} limit - The number of results per page for pagination.
+     * 
+     * @returns {Promise<Object>} - Returns an object of type "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of paginated movie data objects.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `totalPages` {number} : Total number of pages based on the total count and limit.
+     *   - `currentPage` {number} : Current page number based on the input.
+     * 
+     * @throws {Error} - Throws an error if the query fails or there is an issue retrieving the data.
+     * 
+     */
+    getAll: async (page, limit) => {
 
         const offset = (page - 1) * limit
 
@@ -18,8 +35,8 @@ const movieService = {
             offset
         })
 
-        const result = new MoviesData({
-            values: rows.map(movie => new movieDTO(movie)),
+        const result = new NewSuccessResponse({
+            data: rows.map(movie => new movieDTO(movie)),
             totalCount: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page
@@ -29,7 +46,25 @@ const movieService = {
         return result
     },
 
-    getByTitle: async (page = 1, limit = 10, searchString = "") => {
+
+     /**
+     * getByTitle - Service function that handles querying the database with specific parameters,
+     * including pagination and searching for a specific substring in movie titles. Returns paginated results of movies.
+     * 
+     * @param {number} page - The current page number for pagination.
+     * @param {number} limit - The number of results per page for pagination.
+     * @param {string} searchString - The substring used to search for movies by title.
+     * 
+     * @returns {Promise<Object>} - Returns an object of type "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of paginated movie data objects.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `totalPages` {number} : Total number of pages based on the total count and limit.
+     *   - `currentPage` {number} : Current page number based on the input.
+     * 
+     * @throws {Error} - Throws an error if the query fails or there is an issue retrieving the data.
+     * 
+     */
+    getByTitle: async (page, limit, searchString) => {
 
         const offset = (page - 1) * limit
         try {
@@ -47,8 +82,8 @@ const movieService = {
                 limit,
                 offset
             })
-            const result = new MoviesData({
-                values: rows.map(movie => new movieDTO(movie)),
+            const result = new NewSuccessResponse({
+                data: rows.map(movie => new movieDTO(movie)),
                 totalCount: count,
                 totalPages: Math.ceil(count / limit),
                 currentPage: page
