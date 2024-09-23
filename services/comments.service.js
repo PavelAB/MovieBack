@@ -17,9 +17,8 @@ const commentService = {
             ],
             distinct: true
         })
-        const comment = rows.map(com => new commentDTO(com))
         return {
-            comment, count
+            comment: rows, count
         }
     },
     getByParams: async (data) => {

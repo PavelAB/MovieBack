@@ -76,9 +76,7 @@ const movieController = {
      */
 
     getByTitle: async (req, res) => {
-        const {page = 1, limit = 10} = req.query
-        const {searchString} = req.body
-        console.log("test", searchString)
+        const {page = 1, limit = 10, searchString = ""} = req.query
 
         try {
             const result = await movieService.getByTitle(Number(page), Number(limit), searchString)
