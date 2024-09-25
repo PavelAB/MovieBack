@@ -24,8 +24,8 @@ const ratingService = {
      * including pagination and data filtering. Returns paginated results of ratings along with related movies and users.
      * 
      * @param {Object} data - The search parameters used to filter the ratings.
-     * @param {number} page - The current page number for pagination.
-     * @param {number} limit - The number of results per page for pagination.
+     * @param {number} [page = 1] - The current page number for pagination (default is 1).
+     * @param {number} [limit = 10] - The number of results per page for pagination (default is 10).
      * 
      * @returns {Promise<Object>} - Returns an object of type "NewSuccessResponse" containing:
      *   - `data` {Array<Object>} : List of paginated rating data objects.
@@ -36,7 +36,7 @@ const ratingService = {
      * @throws {Error} - Throws an error if the query fails or there is an issue retrieving the data.
      * 
      */
-    getByParams: async (data, page, limit) => {
+    getByParams: async (data, page = 1, limit = 10) => {
 
         const searchParams = [data]
         const offset = (page - 1) * limit
@@ -67,13 +67,36 @@ const ratingService = {
         }
     },
 
+    /**
+     * update - Service function that handles updating a rating in the database.
+     * 
+     * @param {number} id - The ID of the rating being updated.
+     * @param {Object} data - The object containing the updated rating data.
+     * @param {number} data.rate_writing - The rating for writing.
+     * @param {number} data.rate_sound - The rating for sound.
+     * @param {number} data.rate_cinematography - The rating for cinematography.
+     * @param {number} data.rate_actor_game - The rating for the actors' performance.
+     * 
+     * @returns {boolean} - Returns true if the rating was successfully updated.
+     * 
+     * @throws {Error} - Throws an error if the update fails.
+     * 
+     */
     update : async ( id, data ) => {
+
+        const rating = {
+            rate_writing: data.rate_writing,
+            rate_sound: data.rate_sound,
+            rate_cinematography: data.rate_cinematography,
+            rate_actor_game: data.rate_actor_game,
+            rate_picture: (data.rate_writing + data.rate_sound + data.rate_cinematography + data.rate_actor_game)/4 
+        }
 
         const transaction = await db.sequelize.transaction()
         let updateRate
 
         try {
-            updateRate = await db.Ratings.update(data, {
+            updateRate = await db.Ratings.update(rating, {
                 where: {
                     ID_Rating : id
                 }
@@ -88,25 +111,52 @@ const ratingService = {
         return true
     },
 
+
+
+    /**
+     * create - Service function that handles creating a rating in the database.
+     * 
+     * @param {Object} data - The object for created a new rating.
+     * @param {number} data.User - The ID of the user creating the rating.
+     * @param {number} data.Movie - The ID of the movie being rated.
+     * @param {number} data.rate_writing - The rating for writing.
+     * @param {number} data.rate_sound - The rating for sound.
+     * @param {number} data.rate_cinematography - The rating for cinematography.
+     * @param {number} data.rate_actor_game - The rating for the actors' performance.
+     * 
+     * @returns {boolean} - Returns true if the rating was successfully created.
+     * 
+     * @throws {Error} - Throws an error if the creation fails.
+     * 
+     */
     create : async (data) => {
+
+        const rating = {
+            ID_User: data.User,
+            ID_Movie: data.Movie,
+            rate_writing: data.rate_writing,
+            rate_sound: data.rate_sound,
+            rate_cinematography: data.rate_cinematography,
+            rate_actor_game: data.rate_actor_game,
+            rate_picture: (data.rate_writing + data.rate_sound + data.rate_cinematography + data.rate_actor_game)/4 
+        }
+
         const transaction = await db.sequelize.transaction()
         let isCreated
         try {
-            isCreated = await db.Ratings.create(data, {transaction})
-            const movie = await db.Movies.findByPk(data.ID_Movie, { transaction })
+            isCreated = await db.Ratings.create(rating, {transaction})
+            const movie = await db.Movies.findByPk(rating.ID_Movie, { transaction })
             await isCreated.setMovie(movie, { transaction })
-            const user = await db.Users.findByPk(data.ID_User, {transaction})
+            const user = await db.Users.findByPk(rating.ID_User, {transaction})
             await isCreated.setUser(user, {transaction})
             await transaction.commit()
 
         } catch (error) {
-            console.log(error);
             await transaction.rollback()
-            return false
+            throw new Error(`Error : ${error.message}`);
         }
 
-        if(isCreated)
-            return true
+        return true
     },
     delete : async (id) => {
         const isDeleted = await db.Ratings.findByPk(id)

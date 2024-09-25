@@ -62,29 +62,50 @@ const ratingController = {
         try {
             const result = await ratingService.getByParams(data, Number(page), Number(limit))
             
-            if( result.data.length > 0 )
-                res.status(200).json(result)
-            else 
-                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
+            res.status(200).json(result)
+            
         } catch (error) {
             res.status(500).json(new ErrorResponse(error.message, 500)) 
         }            
     },
 
     /**
-     * create
-     * @param { Request } req
-     * @param { Response } res
+     * Create - Function to create or update a rating.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including data to create or update a raiting.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "SuccessResponseMsg" containing:
+     *   - `msg` {string} : Message to notify the user whether the rating was created or updated.
+     *   - `code` {number} : Status code.
+     *      * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
-    create: async ( req, res ) => {
+    create: async (req, res) => {
 
         const data = req.body
-        const isCreated = await ratingService.create(data)
+
+        const searchOne = {
+            ID_Movie: data.Movie,
+            ID_User: data.User,
+        }
         
-        if(isCreated)
-            res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
-        else
-            res.status(400).json(new ErrorResponse('Error during creation.', 400))
+        try {
+            const rateExist = await ratingService.getByParams(searchOne)
+            const isExist = rateExist.data.length > 0
+
+            if (isExist){
+                await ratingService.update( rateExist.data[0].ID_Rating, data )
+                return res.status(200).json(new SuccesResponseMsg('The rating has been updated.', 200))
+            }
+            else{
+                await ratingService.create(data)
+                return res.status(200).json(new SuccesResponseMsg('The rating has been created.', 200))
+            }
+            
+        } catch (error) {
+            return res.status(500).json(new ErrorResponse(error.message, 500))
+        }
     },
 
     /**
