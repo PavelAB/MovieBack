@@ -76,6 +76,10 @@ db.Ratings.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
 db.Movies.hasMany(db.Comments, { foreignKey: { name: 'ID_Movie'}})
 db.Comments.belongsTo(db.Movies, { foreignKey: { name: 'ID_Movie'}})
 
+// Users - Comments
+db.Users.hasMany(db.Comments, { foreignKey: { name: 'ID_User'}})
+db.Comments.belongsTo(db.Users, { foreignKey: { name: 'ID_User'}})
+
 // Personnes - Movies
 db.Personnes.hasMany(db.Movies, { foreignKey: { name: 'directered_by'},as: 'isDirector'})
 db.Movies.belongsTo(db.Personnes, { foreignKey: { name: 'directered_by'}, as: 'Director'})
