@@ -1,4 +1,4 @@
-const { movieDTO, MoviesData } = require("../dto/movieDTO")
+const { movieDTO, moviesListDTO } = require("../dto/movieDTO")
 const db = require("../models")
 const { Op } = require("sequelize");
 const { NewSuccessResponse } = require("../utils/SuccessResponse");
@@ -36,7 +36,7 @@ const movieService = {
         })
 
         const result = new NewSuccessResponse({
-            data: rows.map(movie => new movieDTO(movie)),
+            data: rows.map(movie => new moviesListDTO(movie)),
             totalCount: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page
@@ -83,7 +83,7 @@ const movieService = {
                 offset
             })
             const result = new NewSuccessResponse({
-                data: rows.map(movie => new movieDTO(movie)),
+                data: rows.map(movie => new moviesListDTO(movie)),
                 totalCount: count,
                 totalPages: Math.ceil(count / limit),
                 currentPage: page
@@ -98,7 +98,10 @@ const movieService = {
 
     getById: async (id) => {
         const value = await db.Movies.findByPk(id, {
-            include: [db.Ratings, db.Comments, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+            include: [db.Ratings, db.Genres, db.Tags, db.Companies, db.Awards_Movies,
+            { model: db.Comments, include: [
+                {model: db.Users, attributes: ['first_name']}
+            ]},
             { model: db.Personnes, as: "Actors", throught: 'MM_Staring_by_Personnes_Movies' },
             { model: db.Personnes, as: "Writers", throught: 'MM_Written_by_Personnes_Movies' },
             { model: db.Personnes, as: "Director", throught: 'Movies' }],
