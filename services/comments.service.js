@@ -48,30 +48,46 @@ const commentService = {
     update: async () => {
         //TODO To begin, I assume that we cannot modify a comment.
     },
+
+    /**
+     * create - Service function that handles creating a comment in the database.
+     * 
+     * @param {Object} data - The object containing the new comment data.
+     * @param {number} data.Users - The ID of the user creating the comment.
+     * @param {number} data.Movies - The ID of the movie being commented on.
+     * @param {number} data.body - The content of the comment.
+     * 
+     * @returns {boolean} - Returns true if the comment was successfully created.
+     * 
+     * @throws {Error} - Throws an error if the creation fails.
+     * 
+     */
     create: async (data) => {
-        console.log("data",data);
+
         const transaction = await db.sequelize.transaction()
+        
         let isCreated
+
         try {
-            isCreated = await db.Comments.create(data)
+            isCreated = await db.Comments.create(data, { transaction })
 
             const movie = await db.Movies.findByPk(data.Movies, { transaction })
             await isCreated.setMovie(movie, { transaction })
 
             const user = await db.Users.findByPk(data.Users, { transaction })
-            console.log("user",user);
-            await isCreated.setComment(user, { transaction })
+            await isCreated.setUser(user, { transaction })
 
             await transaction.commit()
 
         } catch (error) {
-            console.log(error);
             await transaction.rollback()
-            return false
+            throw new Error(`Error : ${error.message}`)
         }
-        if (isCreated)
-            return true
+        
+        return true
     },
+
+
     delete: async (id) => {
         const isDeleted = await db.Comments.findByPk(id)
 
