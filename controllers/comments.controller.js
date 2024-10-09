@@ -44,7 +44,19 @@ const commentController = {
      * @param { Response } res
      */
     getByParams: async ( req, res ) => {
-        res.sendStatus(501)
+
+        const { limit = 10, page = 1, ...data } = req.query
+
+        console.log("data", data)
+        
+        try {
+            const result = await commentService.getByParams(data, Number(page), Number(limit))
+            
+            res.status(200).json(result)
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500)) 
+        }  
     },
 
     /**

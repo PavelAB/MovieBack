@@ -9,15 +9,16 @@ class movieDTO{
         this.release_date = release_date,
         this.directed_by = directed_by
         this.Ratings = Ratings
-        this.Comments = Comments? Comments.map((item, index) => {
-            return {
-                ID_Comment: item.ID_Comment,
-                body: item.body,
-                createdAt: item.createdAt,
-                ID_User: item.ID_User,
-                UserFirstName: item.User.dataValues.first_name
-            }
-        }) : []
+        // this.Comments = Comments? Comments.map((item, index) => {
+        //     return {
+        //         ID_Comment: item.ID_Comment,
+        //         body: item.body,
+        //         createdAt: item.createdAt,
+        //         ID_User: item.ID_User,
+        //         UserFirstName: item.User.dataValues.first_name
+        //     }
+        // }) : []
+        this.Comments = Comments
         this.Genres = Genres
         this.Tags = Tags
         this.Companies = Companies

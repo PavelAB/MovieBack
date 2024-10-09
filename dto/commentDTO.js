@@ -1,23 +1,9 @@
 class commentDTO {
-    constructor({ ID_Comment, body, Movie, Comment }) {
+    constructor({ ID_Comment, body, Movie, ID_User, ID_Movie }) {
         this.ID_Comment = ID_Comment,
         this.body = body,
-        this.User = Comment[0].login
-        if (Movie) {
-            this.Movie = {
-                ID_Movie: Movie.ID_Movie,
-                title: Movie.title,
-            }
-        }
-        else
-            this.Movie = null
-        // if (Comment && Comment.length > 0) {
-        //     this.User = {
-        //         login: Comment[0].login // ici vous pourriez avoir plusieurs utilisateurs, je prends le premier pour cet exemple
-        //     }
-        // }
-        // else
-        //     this.User = null
+        this.ID_User = ID_User,
+        this.ID_Movie = ID_Movie
 
     }
 }

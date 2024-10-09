@@ -63,7 +63,7 @@ const ratingService = {
             })
             return result
         } catch (error) {
-            throw new Error(`Error : ${error.message}`);
+            throw new Error(`Error : ${error.message}`)
         }
     },
 
