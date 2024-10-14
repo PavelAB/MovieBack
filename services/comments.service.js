@@ -37,22 +37,24 @@ const commentService = {
                         model: db.Users,
                         as: "Comment",
                         through: {
-                            model: db.MM_Users_Comments,
-                            attributes: ['Like']
+                            model: db.MM_Users_Comments
                         }
                     },
-                    { model: db.Users, as: "User" }
+                    {   
+                        model: db.Users, as: "User",
+                        attributes: ['first_name', 'last_name', 'login', 'ID_User' ] 
+
+                    }
                 ],
                 distinct: true,
                 limit,
                 offset,
                 where: {
                     [Op.and]: searchParams,
-                },
-                raw: true
+                }
             })
 
-            //console.log("imhere2", rows[0].dataValues.Comment[0].MM_Users_Comments)
+            console.log("MM_comments ::::: > ", rows[0].dataValues.Comment[0].MM_Users_Comments)
             console.log("imhere2", rows[0])
             const result = new NewSuccessResponse({
                 data: rows.map((comment) => new commentDTO(comment)),
