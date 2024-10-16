@@ -25,14 +25,17 @@ const commentService = {
 
     getByParams: async (data, page = 1, limit = 10) => {
 
-        console.log("Im here")
-        const searchParams = [data];
-        const offset = (page - 1) * limit;
+        const searchParams = [data]
+        const offset = (page - 1) * limit
 
         try {
             const { rows, count } = await db.Comments.findAndCountAll({
                 include: [
-                    { model: db.Movies, as: "Movie" },
+                    { 
+                        model: db.Movies, 
+                        as: "Movie",
+                        attributes: ['ID_Movie', 'title'] 
+                    },
                     {
                         model: db.Users,
                         as: "Comment",
@@ -53,17 +56,12 @@ const commentService = {
                     [Op.and]: searchParams,
                 }
             })
-
-            console.log("MM_comments ::::: > ", rows[0].dataValues.Comment[0].MM_Users_Comments)
-            console.log("imhere2", rows[0])
             const result = new NewSuccessResponse({
                 data: rows.map((comment) => new commentDTO(comment)),
                 totalCount: count,
                 totalPages: Math.ceil(count / limit),
                 currentPage: page
             })
-
-            console.log("result", result)
 
             return result
 
