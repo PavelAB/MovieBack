@@ -51,8 +51,6 @@ const ratingController = {
      *   - `currentPage` {number} : Current page number.
      *   - `totalPages` {number} : Total number of pages.
      * 
-     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
-     * 
      * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
     getByParams: async ( req, res ) => {

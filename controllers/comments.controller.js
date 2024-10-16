@@ -39,15 +39,24 @@ const commentController = {
     },
 
     /**
-     * GetByParams
-     * @param { Request } req
-     * @param { Response } res
+     * GetByParams - General function to handle searching with multiple or specific parameters automatically.
+     * Also manages pagination and sends an appropriate response.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`, and other search filters.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of paginated comments.
+     *   - `totalCount` {number} : Total number of comments.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
     getByParams: async ( req, res ) => {
 
         const { limit = 10, page = 1, ...data } = req.query
 
-        console.log("data", data)
         
         try {
             const result = await commentService.getByParams(data, Number(page), Number(limit))

@@ -22,7 +22,24 @@ const commentService = {
         };
     },
 
-
+    /**
+     * getByParams - Service function that handles querying the database with specific parameters, 
+     * including pagination and data filtering. Returns paginated results of comments along 
+     * with related movies, users, and a list of likes.
+     * 
+     * @param {Object} data - The search parameters used to filter the comments.
+     * @param {number} [page = 1] - The current page number for pagination (default is 1).
+     * @param {number} [limit = 10] - The number of results per page for pagination (default is 10).
+     * 
+     * @returns {Promise<NewSuccessResponse>} - Returns a "NewSuccessResponse" object containing:
+     *   - `data` {Array<commentDTO>} : List of paginated comment data objects.
+     *   - `totalCount` {number} : Total number of comments.
+     *   - `totalPages` {number} : Total number of pages based on the total count and limit.
+     *   - `currentPage` {number} : Current page number based on the input.
+     * 
+     * @throws {Error} - Throws an error if the query fails or there is an issue retrieving the data.
+     * 
+     */
     getByParams: async (data, page = 1, limit = 10) => {
 
         const searchParams = [data]
