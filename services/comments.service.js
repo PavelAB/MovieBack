@@ -1,5 +1,5 @@
 const commentDTO = require("../dto/commentDTO");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const db = require("../models");
 const { NewSuccessResponse } = require("../utils/SuccessResponse");
 
@@ -20,6 +20,37 @@ const commentService = {
             comment: rows,
             count,
         };
+    },
+
+    /**
+     * getCommentUserMMByID - Service function that searches for an entry in `MM_Users_Comments` using `ID_Comment` and `ID_User`.
+     * 
+     * @param {Object} data - The object containing the data to search for an entry.
+     * @param {number} data.ID_User - The ID of the user associated with the entry.
+     * @param {number} data.ID_Comments - The ID of the comment being liked.
+     * 
+     * @returns {Object} - Returns the first matching `MM_Users_Comments` entry if found.
+     * 
+     * @throws {Error} - Throws an error if the creation fails.
+    */
+
+    getCommentUserMMByID: async (data) => {
+
+        const searchParam = [data]
+
+        try {
+            
+            const {rows} = await db.MM_Users_Comments.findAndCountAll({
+                where: {
+                    [Op.and]: searchParam
+                }
+            })
+
+            return rows[0]
+
+        } catch (error) {
+            throw new Error(`Error : ${error.message}`)       
+        }
     },
 
     /**
@@ -128,6 +159,88 @@ const commentService = {
         }
 
         return true;
+    },
+
+
+    /**
+     * createLike - Service function that handles creating an entry in `MM_Users_Comments`.
+     * 
+     * @param {Object} data - The object containing the data to create an entry.
+     * @param {number} data.User - The ID of the user creating the entry.
+     * @param {number} data.Comment - The ID of the comment being liked.
+     * 
+     * @returns {boolean} - Returns true if the entry in `MM_Users_Comments` was successfully created.
+     * 
+     * @throws {Error} - Throws an error if the creation fails, or if the comment or user is not found.
+    */
+
+    createLike: async (data) => {
+        const transaction = await db.sequelize.transaction()
+
+        let isCreated
+
+        try {
+            
+            const comment = await db.Comments.findByPk(data.Comment, { transaction })
+            
+            const user = await db.Users.findByPk(data.User, { transaction })
+
+            if(!comment)
+                throw new Error("Comment not found.")
+            
+            if(!user)
+                throw new Error("User not found.")
+            
+            isCreated = await db.MM_Users_Comments.create({
+                Like: true,
+                ID_Comments: comment.ID_Comment,
+                ID_User: user.ID_User
+
+            }, { transaction })
+
+            await transaction.commit()
+
+        } catch (error) {
+            await transaction.rollback()
+            throw new Error(`Error : ${error.message}`)
+        }
+    }, 
+
+
+    /**
+     * updateLike - Service function that handles updating an entry in `MM_Users_Comments`.
+     * 
+     * @param {number} ID_Comment - The ID of the comment to be updated.
+     * @param {number} ID_User - The ID of the user whose entry will be updated.
+     * @param {boolean} like - The new like value to be set.
+     * 
+     * @returns {boolean} - Returns true if the entry in `MM_Users_Comments` was successfully updated.
+     * 
+     * @throws {Error} - Throws an error if the creation fails.
+    */
+
+    updateLike: async (ID_Comment, ID_User, like) => {
+
+        const transaction = await db.sequelize.transaction()
+        let updateCommentLike
+
+        try {
+
+            updateCommentLike = await db.MM_Users_Comments.update({Like: like},{
+                where: {
+                    ID_Comments: ID_Comment,
+                    ID_User: ID_User
+                }
+            }, { transaction })
+
+            await transaction.commit()
+            
+        } catch (error) {
+            await transaction.rollback()
+            throw new Error(`Error : ${error.message}`)
+        }
+        return true
+
     },
 
     delete: async (id) => {

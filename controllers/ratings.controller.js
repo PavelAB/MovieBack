@@ -39,7 +39,7 @@ const ratingController = {
     },
 
     /**
-     * GetByParams - General function to handle searching with multiple or specific parameters automatically.
+     * getByParams - General function to handle searching with multiple or specific parameters automatically.
      * Also manages pagination and sends an appropriate response.
      * 
      * @param { Request } req - The request object, which contains query parameters including `limit`, `page`, and other search filters.
@@ -68,7 +68,7 @@ const ratingController = {
     },
 
     /**
-     * Create - Function to create or update a rating.
+     * create - Function to create or update a rating.
      * 
      * @param { Request } req - The request object, which contains query parameters including data to create or update a raiting.
      * @param { Response } res - The response object used to send the results or errors.
