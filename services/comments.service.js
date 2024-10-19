@@ -33,7 +33,6 @@ const commentService = {
      * 
      * @throws {Error} - Throws an error if the creation fails.
     */
-
     getCommentUserMMByID: async (data) => {
 
         const searchParam = [data]
@@ -152,13 +151,13 @@ const commentService = {
             const user = await db.Users.findByPk(data.Users, { transaction });
             await isCreated.setUser(user, { transaction });
 
-            await transaction.commit();
+            await transaction.commit()
+
+            return true
         } catch (error) {
             await transaction.rollback();
             throw new Error(`Error : ${error.message}`);
         }
-
-        return true;
     },
 
 
@@ -173,7 +172,6 @@ const commentService = {
      * 
      * @throws {Error} - Throws an error if the creation fails, or if the comment or user is not found.
     */
-
     createLike: async (data) => {
         const transaction = await db.sequelize.transaction()
 
@@ -218,7 +216,6 @@ const commentService = {
      * 
      * @throws {Error} - Throws an error if the creation fails.
     */
-
     updateLike: async (ID_Comment, ID_User, like) => {
 
         const transaction = await db.sequelize.transaction()
@@ -234,13 +231,13 @@ const commentService = {
             }, { transaction })
 
             await transaction.commit()
+
+            return true
             
         } catch (error) {
             await transaction.rollback()
             throw new Error(`Error : ${error.message}`)
         }
-        return true
-
     },
 
     delete: async (id) => {

@@ -68,19 +68,27 @@ const commentController = {
     },
 
     /**
-     * create
-     * @param { Request } req
-     * @param { Response } res
+     * create - Function to create a new comment.
+     * 
+     * @param { Request } req - The request object, containing the data to create a comment in the body.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "SuccessResponseMsg" containing:
+     *   - `msg` {string} : Message to notify the user whether the comment was created.
+     *   - `code` {number} : Status code.
+     *      * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
     create: async ( req, res ) => {
         
-        const data = req.body 
-        const isCreated = await commentService.create(data)
+        const data = req.body         
 
-        if(isCreated)
+        try {
+            await commentService.create(data)
             res.status(200).json(new SuccesResponseMsg('The element has been created.', 200))
-        else
-            res.status(400).json(new ErrorResponse('Error during creation.', 400))
+        } catch (error) {
+            res.status(500).json(new ErrorResponse('Error during creation.', 500))
+        }            
     },
 
     /**
