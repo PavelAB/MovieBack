@@ -27,7 +27,7 @@ const commentService = {
      * 
      * @param {Object} data - The object containing the data to search for an entry.
      * @param {number} data.ID_User - The ID of the user associated with the entry.
-     * @param {number} data.ID_Comments - The ID of the comment being liked.
+     * @param {number} data.ID_Comment - The ID of the comment being liked.
      * 
      * @returns {Object} - Returns the first matching `MM_Users_Comments` entry if found.
      * 
@@ -128,8 +128,8 @@ const commentService = {
      * create - Service function that handles creating a comment in the database.
      *
      * @param {Object} data - The object containing the new comment data.
-     * @param {number} data.Users - The ID of the user creating the comment.
-     * @param {number} data.Movies - The ID of the movie being commented on.
+     * @param {number} data.User - The ID of the user creating the comment.
+     * @param {number} data.Movie - The ID of the movie being commented on.
      * @param {number} data.body - The content of the comment.
      *
      * @returns {boolean} - Returns true if the comment was successfully created.
@@ -145,10 +145,10 @@ const commentService = {
         try {
             isCreated = await db.Comments.create(data, { transaction });
 
-            const movie = await db.Movies.findByPk(data.Movies, { transaction });
+            const movie = await db.Movies.findByPk(data.Movie, { transaction });
             await isCreated.setMovie(movie, { transaction });
 
-            const user = await db.Users.findByPk(data.Users, { transaction });
+            const user = await db.Users.findByPk(data.User, { transaction });
             await isCreated.setUser(user, { transaction });
 
             await transaction.commit()
@@ -191,7 +191,7 @@ const commentService = {
             
             isCreated = await db.MM_Users_Comments.create({
                 Like: true,
-                ID_Comments: comment.ID_Comment,
+                ID_Comment: comment.ID_Comment,
                 ID_User: user.ID_User
 
             }, { transaction })
@@ -225,7 +225,7 @@ const commentService = {
 
             updateCommentLike = await db.MM_Users_Comments.update({Like: like},{
                 where: {
-                    ID_Comments: ID_Comment,
+                    ID_Comment: ID_Comment,
                     ID_User: ID_User
                 }
             }, { transaction })

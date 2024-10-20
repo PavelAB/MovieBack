@@ -108,7 +108,7 @@ const commentController = {
         const data = req.body
 
         const searchOne = {
-            ID_Comments : data.Comment,
+            ID_Comment : data.Comment,
             ID_User : data.User
         }
 
@@ -117,7 +117,7 @@ const commentController = {
             const likeExist = await commentService.getCommentUserMMByID(searchOne)
 
             if(likeExist){
-                await commentService.updateLike(likeExist.dataValues.ID_Comments, likeExist.dataValues.ID_User, !likeExist.dataValues.Like)
+                await commentService.updateLike(likeExist.dataValues.ID_Comment, likeExist.dataValues.ID_User, !likeExist.dataValues.Like)
                 return res.status(200).json(new SuccesResponseMsg('The like has been updated.', 200))
             }
             else{

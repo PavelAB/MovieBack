@@ -50,7 +50,7 @@ db.Personnes.belongsToMany(db.Movies, { through: 'MM_Staring_by_Personnes_Movies
 
 // Users - Comments
 db.Users.belongsToMany(db.Comments, { through: db.MM_Users_Comments , foreignKey: { name: "ID_User" },as: 'User'})
-db.Comments.belongsToMany(db.Users, { through: db.MM_Users_Comments , foreignKey: { name: "ID_Comments" },as: 'Comment'})
+db.Comments.belongsToMany(db.Users, { through: db.MM_Users_Comments , foreignKey: { name: "ID_Comment" },as: 'Comment'})
 
 
 
