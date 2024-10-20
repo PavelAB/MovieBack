@@ -11,12 +11,11 @@ class commentDTO {
         and I’ll check on the front end if the connected user is in this list.
         */
         this.IDUsersLiked = Comment ? Comment.map((Comment, index) => {
-            console.log("test :>", Comment.MM_Users_Comments.dataValues)
             if(Comment.MM_Users_Comments.dataValues.Like)
                 return Comment.MM_Users_Comments.dataValues.ID_User
             return null
         }).filter(id => id !== null) : []
-        this.NumberLikes = this.IDUsersLikes.length,
+        this.NumberLikes = this.IDUsersLiked.length,
         this.createdAt = createdAt
     }
 }

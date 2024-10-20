@@ -12,7 +12,7 @@ commentRouter.route('/')
     .post(bodyValidator(createCommentsValidator),commentController.create)
 
 commentRouter.route('/params')
-    .get(authRoles('Admin'),commentController.getByParams)
+    .get(authRoles('Admin'), commentController.getByParams)
 commentRouter.route('/like')
     .post(commentController.createLike)
 commentRouter.route('/:ID_Comment')

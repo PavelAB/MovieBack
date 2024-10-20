@@ -109,7 +109,6 @@ const commentService = {
                 totalPages: Math.ceil(count / limit),
                 currentPage: page
             })
-
             return result
 
         } catch (error) {

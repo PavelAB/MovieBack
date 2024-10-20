@@ -59,7 +59,6 @@ const commentController = {
         
         try {
             const result = await commentService.getByParams(data, Number(page), Number(limit))
-            
             res.status(200).json(result)
             
         } catch (error) {
