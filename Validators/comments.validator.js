@@ -6,4 +6,9 @@ const createCommentsValidator = yup.object({
     User: yup.number().required()
 
 })
-module.exports = createCommentsValidator
+const createLikeValidator = yup.object({
+    Comment: yup.number().required(),
+    User: yup.number().required()
+
+})
+module.exports = {createCommentsValidator, createLikeValidator}
