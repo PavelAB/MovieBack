@@ -8,16 +8,13 @@ const  commentRouter = require('express').Router()
 
 commentRouter.route('/')
     .get(authRoles('Admin'), commentController.getAll)
-    //.post(authRoles('User'),bodyValidator(createCommentsValidator),commentController.create)
-    .post(bodyValidator(createCommentsValidator),commentController.create)
-
+    .post(authRoles('User'), bodyValidator(createCommentsValidator), commentController.create)
 commentRouter.route('/params')
-    .get(authRoles('Admin'), commentController.getByParams)
+    .get(authRoles('User'), commentController.getByParams)
 commentRouter.route('/like')
-    .post(commentController.createLike)
+    .post(authRoles('User'), commentController.createLike)
 commentRouter.route('/:ID_Comment')
     .get(authRoles('Admin'),commentController.getByID)
-    .put()
     .delete(authRoles('Admin'),commentController.delete)
 
 module.exports = commentRouter
