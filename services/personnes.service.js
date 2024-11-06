@@ -1,6 +1,7 @@
 const db = require("../models")
-const { Op } = require("sequelize");
-const personneDTO = require("../dto/personneDTO")
+const { Op, Sequelize } = require("sequelize");
+const personneDTO = require("../dto/personneDTO");
+const { NewSuccessResponse } = require("../utils/SuccessResponse");
 
 const personneService = {
     getAll : async () => {
@@ -10,13 +11,54 @@ const personneService = {
                 { model: db.Movies, as: "ActedMovies", through: 'MM_Staring_by_Personnes_Movies' },
                 { model: db.Movies, as: "WrittenMovies", through: 'MM_Written_by_Personnes_Movies' },
                 { model: db.Movies, as: "isDirector"} // changé de 'isDerector'
-            ],  
-            distinct: true
+            ]
         })
         const values = rows.map( company => new personneDTO(company) )
         return {
             values, count 
         }
+    },
+
+    /**
+     * getRandomPersonnes - Service function that returns a random selection of personnes based on their job type.
+     * 
+     * @param {number} [limit = 8] - The number of personnes to be returned (default is 8).
+     * @param {string} [job = ""] - The job type filter, can be "Actor", "Director", or "Writer" (default is an empty string for no filter).
+     * 
+     * @returns {Promise<NewSuccessResponse>} - Returns a "NewSuccessResponse" object containing:
+     *   - `data` {Array<Person>} : List of random personnes.
+     *   - `totalCount` {number} : Total number of personnes matching the criteria.
+     *   - `totalPages` {number} : Total number of pages.
+     *   - `currentPage` {number} : Current page number.
+     * 
+     * @throws {Error} - Throws an error if the query fails or there is an issue retrieving the data.
+     * 
+     */
+    getRandomPersonnes : async (limit = 8, job = "") => {
+        const whereJobCondition = {}
+        if(job){
+            whereJobCondition.job = job
+        }
+
+        try {
+            const {rows, count} = await db.Personnes.findAndCountAll({
+                where: whereJobCondition,
+                order: Sequelize.literal("NEWID()"),
+                limit: limit,
+                attributes: ["ID_Personne", "first_name", "last_name", "job" ,"picture"]
+            })
+
+            const result = NewSuccessResponse({
+                data: rows,
+                totalCount: count,
+            })
+
+            return result
+            
+        } catch (error) {
+            throw new Error(`Error : ${error.message}`) 
+        }
+
     },
 
     getByParams: async (data) => {
