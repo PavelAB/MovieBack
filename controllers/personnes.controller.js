@@ -2,6 +2,7 @@ const { Request, Response } = require('express')
 const {SuccessResponse, SuccesResponseMsg} = require('../utils/SuccessResponse')
 const personneService = require('../services/personnes.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
+const commentService = require('../services/comments.service')
 
 
 
@@ -22,6 +23,32 @@ const personneController = {
         else
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
 
+    },
+
+    /**
+     * getRandomPersonnes - Function to handle searching for random personnes based on their job type.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including `limit` (number of personnes to return) and `job` (job type filter).
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
+     *   - `data` {Array<Person>} : List of random personnes.
+     *   - `totalCount` {number} : Total number of personnes matching the criteria.
+     *   - `totalPages` {number} : Total number of pages.
+     *   - `currentPage` {number} : Current page number.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
+     */
+    getRandomPersonnes: async ( req, res ) => {
+        const {limit = 8, job = ""} = req.query
+
+        try {
+            const result = await personneService.getRandomPersonnes(Number(limit), job)
+            res.status(200).json(result)
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500)) 
+        }
     },
 
     /**

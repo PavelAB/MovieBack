@@ -48,7 +48,7 @@ const personneService = {
                 attributes: ["ID_Personne", "first_name", "last_name", "job" ,"picture"]
             })
 
-            const result = NewSuccessResponse({
+            const result = new NewSuccessResponse({
                 data: rows,
                 totalCount: count,
             })
