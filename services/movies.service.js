@@ -1,6 +1,6 @@
-const { movieDTO, moviesListDTO } = require("../dto/movieDTO")
+const { movieDTO, moviesListDTO, moviesByPersonID } = require("../dto/movieDTO")
 const db = require("../models")
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { NewSuccessResponse } = require("../utils/SuccessResponse");
 
 
@@ -258,6 +258,65 @@ const movieService = {
             return {
                 values, count
             }
+        }
+    },
+
+    getByPersonId: async (personId) => {
+        if(!personId)
+            throw new Error(`Error : Person ID not provided ( personId = ${personId} )`)
+
+        try {
+            const {rows: rowsDirectered, count: countDirectered} = await db.Movies.findAndCountAll({
+                include: [
+                    { 
+                        model: db.Personnes, 
+                        as: "Director",
+                        where: { ID_Personne: personId }
+                    }
+                ],
+                distinct: true,
+                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
+            })
+            const {rows: rowsActors, count: countActors} = await db.Movies.findAndCountAll({
+                include: [
+                    { 
+                        model: db.Personnes, 
+                        as: "Actors", 
+                        through: 'MM_Staring_by_Personnes_Movies',
+                        where: { ID_Personne: personId } 
+                    }
+                ],
+                distinct: true,
+                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
+            })
+            const {rows: rowsWritten, count: countWritten} = await db.Movies.findAndCountAll({
+                include: [
+                    { 
+                        model: db.Personnes,
+                        as: "Writers", 
+                        through: "MM_Writen_by_Personnes_Movies",
+                        where: { ID_Personne: personId }
+                    }
+                ],
+                distinct: true,
+                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
+            })
+
+            const result = new NewSuccessResponse({
+                data: rowsDirectered.map((movie) => new moviesByPersonID(movie)),
+                totalCount: countDirectered,
+                totalPages: 1,
+                currentPage: 1
+            })
+
+            result.data = [...result.data, ...rowsWritten.map((movie) => new moviesByPersonID(movie)), ...rowsActors.map((movie) => new moviesByPersonID(movie))]
+            result.totalCount = result.data.length
+
+
+            return result
+
+        } catch (error) {
+            throw new Error(`Error : ${error.message}`)
         }
     },
 

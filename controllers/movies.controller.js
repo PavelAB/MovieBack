@@ -115,27 +115,21 @@ const movieController = {
     },
 
     /**
-     * GetByPersonnes
+     * GetByPerson
      * @param { Request } req
      * @param { Response } res
      */
-    getByPersonnes: async (req, res) => {
+    getByPerson: async (req, res) => {
 
         console.log(req.query);
-        const { values, count } = await movieService.getByWriter(req.query)
+        const {personID} = req.query
 
-        const { values2, count2 } = await movieService.getByActor(req.query)
-
-        //FIXME Sort based on the 'id_Movie' to avoid displaying the same movie twice.
-        let fusion = [...values, ...values2]
+        const moviesList = await movieService.getByPersonId(personID)
 
 
 
-        if (fusion)
-            if (fusion.length > 0)
-                res.status(200).json(new SuccessResponse(fusion, fusion.length))
-            else
-                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
+        if (moviesList)
+            res.status(200).json(moviesList)
         else
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
 

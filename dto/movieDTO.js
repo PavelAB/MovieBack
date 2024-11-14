@@ -52,5 +52,15 @@ class moviesListDTO{
     }
 }
 
+class moviesByPersonID{
+    constructor({ID_Movie, title, cover, release_date, directered_by}){
+        this.ID_Movie = ID_Movie,
+        this.title = title,
+        this.cover = cover
+        this.directered_by = directered_by,
+        this.release_date = release_date
+    }
+}
 
-module.exports = {movieDTO, moviesListDTO}
+
+module.exports = {movieDTO, moviesListDTO, moviesByPersonID}
