@@ -1,7 +1,7 @@
 const { movieDTO, moviesListDTO, moviesByPersonID } = require("../dto/movieDTO")
 const db = require("../models")
 const { Op, where } = require("sequelize");
-const { NewSuccessResponse } = require("../utils/SuccessResponse");
+const { NewSuccessResponse } = require("../utils/SuccessResponse")
 
 
 const movieService = {
@@ -261,57 +261,92 @@ const movieService = {
         }
     },
 
+
+
+    /**
+     * getByPersonId - Service function that queries the database to fetch movies associated with a specific person.
+     * 
+     * @param {number} personId - The ID of the person whose associated movies are to be fetched.
+     * 
+     * @returns {Promise<NewSuccessResponse>} - Returns a "NewSuccessResponse" object containing:
+     *   - `data` {Array<Movies>} : List of movies associated with the specified person.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `totalPages` {number} : Total number of pages based on the total count and limit.
+     *   - `currentPage` {number} : Current page number based on the input.
+     * 
+     * @throws {Error} - Throws an error if `personId` is missing or invalid, or if the query fails.
+     * 
+     */
     getByPersonId: async (personId) => {
         if(!personId)
-            throw new Error(`Error : Person ID not provided ( personId = ${personId} )`)
+            throw new Error(`Person ID not provided.`)
+
+        /**
+         * getMoviesArray - Helper function to transform a database query response into an array of movie objects.
+         */
+        const getMoviesArray = (promiseResponse) => {
+            if(!promiseResponse || !promiseResponse.rows)
+                return []
+
+            return promiseResponse.rows.map((movie) => new moviesByPersonID(movie))
+        }
+
+
+        /**
+         * fetchMoviesByJob - Fetches movies associated with a person by their job role.
+         *
+         * @param {number} personId - The ID of the person for whom to fetch movies.
+         * @param {string} alias - The alias representing the relationship in the database.
+         * @param {string|null} [through] - Optional join table for many-to-many relationships.
+         * @returns {Promise<object>} - The result of the query, including count and rows.
+         * @throws {Error} - Throws if required parameters are missing or invalid.
+         */
+        const fetchMoviesByJob = async (personId, alias, through = null) => {
+
+            if(!personId)
+                throw new Error(`No provided personId in fetchMoviesByJob function`)
+            if(!alias)
+                throw new Error(`No provided alias in fetchMoviesByJob function`)
+
+
+            const includeProps = { 
+                model: db.Personnes, 
+                as: alias,
+                where: { ID_Personne: personId }
+            }
+
+            if(through)
+                includeProps.through = through
+
+            return db.Movies.findAndCountAll({
+                include: [includeProps],
+                distinct: true,
+                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
+            })
+        }
 
         try {
-            const {rows: rowsDirectered, count: countDirectered} = await db.Movies.findAndCountAll({
-                include: [
-                    { 
-                        model: db.Personnes, 
-                        as: "Director",
-                        where: { ID_Personne: personId }
-                    }
-                ],
-                distinct: true,
-                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
-            })
-            const {rows: rowsActors, count: countActors} = await db.Movies.findAndCountAll({
-                include: [
-                    { 
-                        model: db.Personnes, 
-                        as: "Actors", 
-                        through: 'MM_Staring_by_Personnes_Movies',
-                        where: { ID_Personne: personId } 
-                    }
-                ],
-                distinct: true,
-                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
-            })
-            const {rows: rowsWritten, count: countWritten} = await db.Movies.findAndCountAll({
-                include: [
-                    { 
-                        model: db.Personnes,
-                        as: "Writers", 
-                        through: "MM_Writen_by_Personnes_Movies",
-                        where: { ID_Personne: personId }
-                    }
-                ],
-                distinct: true,
-                attributes: ["ID_Movie", "cover", "title", "release_date", "directered_by"]
-            })
+            const [moviesForDirector, moviesForActor, moviesForWriter] = await Promise.all([
+                fetchMoviesByJob(personId, "Director"),
+                fetchMoviesByJob(personId, "Actors", "MM_Staring_by_Personnes_Movies"),
+                fetchMoviesByJob(personId, "Writers", "MM_Writen_by_Personnes_Movies")
+            ])
 
+            const allMovies = [
+                ...getMoviesArray(moviesForDirector),
+                ...getMoviesArray(moviesForActor),
+                ...getMoviesArray(moviesForWriter)]
+
+            const filteredMovies = Array.from(
+                new Map(allMovies.map(item => [item.ID_Movie, item])).values()
+            )
+        
             const result = new NewSuccessResponse({
-                data: rowsDirectered.map((movie) => new moviesByPersonID(movie)),
-                totalCount: countDirectered,
+                data: filteredMovies,
+                totalCount: filteredMovies.length,
                 totalPages: 1,
                 currentPage: 1
             })
-
-            result.data = [...result.data, ...rowsWritten.map((movie) => new moviesByPersonID(movie)), ...rowsActors.map((movie) => new moviesByPersonID(movie))]
-            result.totalCount = result.data.length
-
 
             return result
 

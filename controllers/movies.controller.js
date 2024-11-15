@@ -115,24 +115,30 @@ const movieController = {
     },
 
     /**
-     * GetByPerson
-     * @param { Request } req
-     * @param { Response } res
+     * getByPerson - Function to retrieve the movies associated with a specific person.
+     * 
+     * @param { Request } req - The request object, which contains query parameter `personID`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
     getByPerson: async (req, res) => {
 
-        console.log(req.query);
         const {personID} = req.query
 
-        const moviesList = await movieService.getByPersonId(personID)
-
-
-
-        if (moviesList)
+        try {
+            const moviesList = await movieService.getByPersonId(personID)
             res.status(200).json(moviesList)
-        else
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
-
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500))
+        }
 
     },
 
