@@ -8,7 +8,6 @@ const authUserId = ()=>{
      * @param {Response} res
      */
     return async (req,res,next)=>{
-        console.log("Im here");
         const bearerToken = req.headers.authorization
         //console.log(bearerToken);
         const token = bearerToken? bearerToken?.split(" ")[1] : null

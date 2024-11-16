@@ -27,7 +27,6 @@ const jwt = {
     decode:( token ) => {
         console.log(token);
         if( !token || token === '' ){
-            console.log('coucou');
             return Promise.reject('Pas de token')
         }
             

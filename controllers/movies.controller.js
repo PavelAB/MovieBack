@@ -1,5 +1,5 @@
 const { Request, Response } = require('express')
-const { SuccessResponse, SuccesResponseMsg } = require('../utils/SuccessResponse')
+const { SuccessResponse, SuccesResponseMsg, NewSuccessResponse } = require('../utils/SuccessResponse')
 const movieService = require('../services/movies.service')
 const { ErrorResponse } = require('../utils/ErrorResponse')
 
@@ -9,18 +9,38 @@ const { ErrorResponse } = require('../utils/ErrorResponse')
 //TODO Verifier le statusCode
 const movieController = {
     /**
-     * GetAll
-     * @param { Request } req
-     * @param { Response } res
+     * GetAll - Function to retrieve all movies from the database.
+     * Also manages pagination and sends an appropriate response.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     *   - `data` {Array<Object>} : List of paginated movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
-    getAll: async (req, res) => {
-        const { values, count } = await movieService.getAll()
-        console.log("coucou");
-        if (values)
-            res.status(200).json(new SuccessResponse(values, count))
-        else
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
 
+    getAll: async (req, res) => {
+
+        const { page = 1, limit = 10 } = req.query
+
+        try {
+            const result = await movieService.getAll(Number(page), Number(limit))
+
+            if (result.data)
+                res.status(200).json(result)
+            else
+                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
+
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500))
+        }
     },
 
     /**
@@ -29,15 +49,48 @@ const movieController = {
      * @param { Response } res
      */
     getByID: async (req, res) => {
-
+        // TODO I tried to retrieve a movie with a non-existent ID, and the backend crashed. This isn't good; it needs to be fixed.
         const id = req.params.ID_Movie
-        console.log(id);
         const movie = await movieService.getById(id)
 
         if (movie)
             res.status(200).json(movie)
         else
             res.status(400).json(new ErrorResponse('The elements were not found.', 400))
+    },
+
+    /**
+     * GetByTitle - Function to handle searching for movies that contain a specific substring in their title.
+     * Also manages pagination and sends an appropriate response.
+     * 
+     * @param { Request } req - The request object, which contains query parameters including `limit`, `page`, and `searchString`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" with:
+     *   - `data` {Array<Object>} : List of paginated movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 404 - Not Found: If no elements are found, returns an error message.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
+     */
+
+    getByTitle: async (req, res) => {
+        const {page = 1, limit = 10, searchString = ""} = req.query
+
+        try {
+            const result = await movieService.getByTitle(Number(page), Number(limit), searchString)
+            
+            if (result.data)
+                res.status(200).json(result)
+            else
+                res.status(404).json(new ErrorResponse('The elements were not found.', 404))
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500)) 
+        }
     },
 
     /**
@@ -62,30 +115,30 @@ const movieController = {
     },
 
     /**
-     * GetByPersonnes
-     * @param { Request } req
-     * @param { Response } res
+     * getByPerson - Function to retrieve the movies associated with a specific person.
+     * 
+     * @param { Request } req - The request object, which contains query parameter `personID`.
+     * @param { Response } res - The response object used to send the results or errors.
+     * 
+     * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
+     *   - `data` {Array<Object>} : List of movies.
+     *   - `totalCount` {number} : Total number of movies.
+     *   - `currentPage` {number} : Current page number.
+     *   - `totalPages` {number} : Total number of pages.
+     * 
+     * @returns {JSON} 500 - Internal Server Error: If an error occurs during the process, returns an error message with status code 500.
      */
-    getByPersonnes: async (req, res) => {
+    getByPerson: async (req, res) => {
 
-        console.log(req.query);
-        const { values, count } = await movieService.getByWriter(req.query)
+        const {personID} = req.query
 
-        const { values2, count2 } = await movieService.getByActor(req.query)
-
-        //FIXME Sort based on the 'id_Movie' to avoid displaying the same movie twice.
-        let fusion = [...values, ...values2]
-
-
-
-        if (fusion)
-            if (fusion.length > 0)
-                res.status(200).json(new SuccessResponse(fusion, fusion.length))
-            else
-                res.status(200).json(new SuccesResponseMsg('The elements were not found.', 200))
-        else
-            res.status(400).json(new ErrorResponse('The elements were not found.', 400))
-
+        try {
+            const moviesList = await movieService.getByPersonId(personID)
+            res.status(200).json(moviesList)
+            
+        } catch (error) {
+            res.status(500).json(new ErrorResponse(error.message, 500))
+        }
 
     },
 
@@ -96,7 +149,6 @@ const movieController = {
      */
     getByTags: async (req, res) => {
 
-        //console.log(req.query);
         const { values, count } = await movieService.getByTags(req.query)
 
         if (values)
@@ -282,12 +334,12 @@ const movieController = {
     * @param { Request } req
     * @param { Response } res
     */
-    removeWriters: async ( req, res ) => {
+    removeWriters: async (req, res) => {
 
         const id = req.params.ID_Movie
         const body = req.body.writers
 
-        const removeWriters = await movieService.removeWritersInMovie( id, body )
+        const removeWriters = await movieService.removeWritersInMovie(id, body)
         if (removeWriters)
             if (removeWriters === 'NotInRange')
                 res.status(200).json(new SuccesResponseMsg('The element to be removed is not found in the array.', 200))
@@ -321,7 +373,7 @@ const movieController = {
      * delete
      * @param { Request } req
      * @param { Response } res
-     */    
+     */
     delete: async (req, res) => {
 
         const id = req.params.ID_Movie

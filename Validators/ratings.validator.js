@@ -6,8 +6,8 @@ const createRatingsValidator = yup.object({
     rate_cinematography: yup.number().required().min(0).max(10),
     rate_sound: yup.number().required().min(0).max(10),
     rate_writing: yup.number().required().min(0).max(10),
-    ID_Movie: yup.number().required(),
-    ID_User: yup.number().required()
+    Movie: yup.number().required(),
+    User: yup.number().required()
 })
 const updateRatingsValidator = yup.object({
     rate_picture: yup.number().min(0).max(10),

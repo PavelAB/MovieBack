@@ -2,8 +2,13 @@ const yup = require('yup')
 
 const createCommentsValidator = yup.object({
     body: yup.string().trim().required(),
-    Movies: yup.number().required(),
-    Users: yup.number().required()
+    Movie: yup.number().required(),
+    User: yup.number().required()
 
 })
-module.exports = createCommentsValidator
+const createLikeValidator = yup.object({
+    Comment: yup.number().required(),
+    User: yup.number().required()
+
+})
+module.exports = {createCommentsValidator, createLikeValidator}

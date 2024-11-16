@@ -1,24 +1,22 @@
+
 class commentDTO {
-    constructor({ ID_Comment, body, Movie, Comment }) {
+    constructor({ ID_Comment, body, Comment, User, Movie, createdAt }) {
         this.ID_Comment = ID_Comment,
         this.body = body,
-        this.User = Comment[0].login
-        if (Movie) {
-            this.Movie = {
-                ID_Movie: Movie.ID_Movie,
-                title: Movie.title,
-            }
-        }
-        else
-            this.Movie = null
-        // if (Comment && Comment.length > 0) {
-        //     this.User = {
-        //         login: Comment[0].login // ici vous pourriez avoir plusieurs utilisateurs, je prends le premier pour cet exemple
-        //     }
-        // }
-        // else
-        //     this.User = null
-
+        this.User = User,        
+        this.Movie = Movie
+        /* TODO Change this !!! Currently, I’m not sure how to add the information 
+        about whether the connected user has already liked the comment. 
+        So, I’ve simply retrieved the list of users who have liked the comment, 
+        and I’ll check on the front end if the connected user is in this list.
+        */
+        this.IDUsersLiked = Comment ? Comment.map((Comment, index) => {
+            if(Comment.MM_Users_Comments.dataValues.Like)
+                return Comment.MM_Users_Comments.dataValues.ID_User
+            return null
+        }).filter(id => id !== null) : []
+        this.NumberLikes = this.IDUsersLiked.length,
+        this.createdAt = createdAt
     }
 }
 module.exports = commentDTO

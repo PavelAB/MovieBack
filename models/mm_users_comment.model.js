@@ -7,15 +7,9 @@ const { Sequelize, DataTypes } = require("sequelize")
 
 module.exports = ( sequelize ) => {
     const MM_Users_Comments = sequelize.define('MM_Users_Comments', {
-        isLike : {
+        Like : {
             type : DataTypes.BOOLEAN,
-            allowNull : true,
-            defaultValue : false
-        },
-        isDislike : {
-            type : DataTypes.BOOLEAN,
-            allowNull : true,
-            defaultValue : false
+            allowNull : false
         }
     },{
         tableName: 'MM_Users_Comments'
