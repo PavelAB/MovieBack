@@ -130,7 +130,7 @@ const movieController = {
      */
     getByPerson: async (req, res) => {
 
-        const {personID} = req.query
+        const personID = req.params.ID_Person
 
         try {
             const moviesList = await movieService.getByPersonId(personID)
