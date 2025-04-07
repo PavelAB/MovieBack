@@ -117,7 +117,7 @@ const movieController = {
     /**
      * getByPerson - Function to retrieve the movies associated with a specific person.
      * 
-     * @param { Request } req - The request object, which contains query parameter `personID`.
+     * @param { Request } req - The request object, which contains the route parameter `ID_Person`.
      * @param { Response } res - The response object used to send the results or errors.
      * 
      * @returns {JSON} 200 - Success: An object "NewSuccessResponse" containing:
